@@ -1,0 +1,26 @@
+.list-item-country,
+.list-country {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-country{
+    margin: 0;
+  padding: 0;
+  list-style: none;
+  
+}
+.list-item-country{
+    margin: 0.5em;
+    padding: 0.5em 1em;
+    background: #fff;
+    flex-direction: row;
+    height:130px
+}
+.flag{
+    width: 180px;
+    height: 120px;
+    overflow: hidden;
+    border: 1px solid #efefef;
+}

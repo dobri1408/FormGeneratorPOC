@@ -1,38 +1,27 @@
-.App {
-  text-align: center;
-}
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.remote-data-demo {
+  position: relative;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.remote-data-demo .remote-data-demo-loading {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff cc;
+  margin: auto;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  display: flex;
+  z-index: 1;
 }
-
-.App-link {
-  color: #61dafb;
+.remote-data-demo .delete-row-column-button {
+  cursor: pointer;
+  opacity: 0.75;
+  display: inline-block;
+  vertical-align: middle;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.remote-data-demo .delete-row-column-button:hover {
+  opacity: 1;
 }

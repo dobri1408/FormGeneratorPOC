@@ -1,0 +1,13 @@
+ul li {
+  margin: 0 20px 20px 0;
+  vertical-align: top;
+}
+.delete-row-column-button {
+  cursor: pointer;
+  opacity: 0.75;
+  display: inline-block;
+  vertical-align: middle;
+}
+.delete-row-column-button:hover {
+  opacity: 1;
+}
