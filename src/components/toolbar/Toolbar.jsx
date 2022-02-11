@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Menu } from "antd";
-import { TableOutlined, DiffOutlined } from "@ant-design/icons";
+import { DiffOutlined } from "@ant-design/icons";
 import "./Toolbar.css";
-import { siteSchema } from "../../data/siteschema";
 import { useHistory } from "react-router-dom";
+import ReactCountryFlag from "react-country-flag";
+import { connect } from "react-redux";
 const { Sider } = Layout;
 
-function Toolbar({ setModalPageGenerator, countrySelected }) {
+function Toolbar({ setModalPageGenerator, country, countryCode, siteSchema }) {
   const history = useHistory();
+  const [pages, setPages] = useState([]);
+  useEffect(() => {
+    if (country) {
+      const countrySchema = siteSchema[country];
+      setPages(countrySchema.map((e) => e.pageName));
+    }
+  }, [country, siteSchema]);
   return (
     <Sider
       style={{
@@ -16,36 +24,54 @@ function Toolbar({ setModalPageGenerator, countrySelected }) {
         position: "fixed",
         left: 0,
         top: 0,
-        bottom: 0,
+        bottom: 0
       }}
     >
-      <div className="logo" />
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
-        <Menu.Item
-          key="2"
-          icon={<DiffOutlined />}
-          onClick={() => {
-            setModalPageGenerator(true);
-          }}
-        >
-          Add new page
-        </Menu.Item>
-        {siteSchema.map((page) => {
-          return (
-            <Menu.Item
-              key={page.pageName}
-              icon={<DiffOutlined />}
-              onClick={() => {
-                history.push(`/${countrySelected}/${page.pageName}`);
-              }}
-            >
-              {page.pageName}
-            </Menu.Item>
-          );
-        })}
-      </Menu>
+      <div className="logo">
+        {country && (
+          <ReactCountryFlag
+            countryCode={countryCode}
+            svg
+            style={{
+              height: "80px",
+              width: "80px",
+              marginLeft: "30%"
+            }}
+          />
+        )}
+      </div>
+      {country && (
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
+          <Menu.Item
+            key="2"
+            icon={<DiffOutlined />}
+            onClick={() => {
+              setModalPageGenerator(true);
+            }}
+          >
+            Add new page
+          </Menu.Item>
+          {pages?.map((page) => {
+            return (
+              <Menu.Item
+                key={page}
+                icon={<DiffOutlined />}
+                onClick={() => {
+                  history.push(`/${country}/${page}`);
+                }}
+              >
+                {page}
+              </Menu.Item>
+            );
+          })}
+        </Menu>
+      )}
     </Sider>
   );
 }
-
-export default Toolbar;
+function mapStateToProps(state) {
+  return {
+    siteSchema: state
+  };
+}
+export default connect(mapStateToProps)(Toolbar);

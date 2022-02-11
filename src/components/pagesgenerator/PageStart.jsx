@@ -2,11 +2,19 @@ import React, { useState } from "react";
 
 import { Layout } from "antd";
 import { PageHeader } from "antd";
-import ReactCountryFlag from "react-country-flag"
+import ReactCountryFlag from "react-country-flag";
 import { countries } from "../../data/countries";
-import "./pagestart.css"
+import { siteSchema } from "../../schemas";
+import { useHistory } from "react-router-dom";
+import "./pagestart.css";
 const { Header, Content } = Layout;
-function PageStart({ modalTableGenerator, setModalTableGenerator, setCountrySelected }) {
+function PageStart({ setSelectedCountry, setCountryCode }) {
+  const history = useHistory();
+
+  const redirectToFirstPageOfCountry = (country) => {
+    const firstPage = siteSchema[country][0].pageName;
+    history.push(`/${country}/${firstPage}`);
+  };
   return (
     <div>
       <Header className="site-layout-background" style={{ padding: 0 }}>
@@ -22,30 +30,36 @@ function PageStart({ modalTableGenerator, setModalTableGenerator, setCountrySele
             style={{
               display: "inline-block",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "center"
             }}
           >
             <ul className="list-country">
               {countries.map((country) => {
                 return (
-                  <> 
-                  <li className="list-item-country" onClick={()=>{setCountrySelected(country)}}>
-     <h3>{country.nameCountry} </h3>
-                    <ReactCountryFlag
-                countryCode={country.countryCode}
-                svg
-                style={{
-                     width: "180px",
-    height: "100px",
+                  <>
+                    <li
+                      className="list-item-country"
+                      onClick={() => {
+                        setSelectedCountry(country.countryName.toLowerCase());
+                        setCountryCode(country.countryCode);
+                        redirectToFirstPageOfCountry(
+                          country.countryName.toLowerCase()
+                        );
+                      }}
+                    >
+                      <ReactCountryFlag
+                        countryCode={country.countryCode}
+                        svg
+                        style={{
+                          width: "180px",
+                          height: "100px",
 
-    border: "1px solid #efefef",
-                }}
-                title="US"
-            />
-          <h3> {country.name}</h3>
-            </li>
-            <h3> {country.name} </h3>
-            </> 
+                          border: "1px solid #efefef"
+                        }}
+                      />
+                      <h3>{country.countryName}</h3>
+                    </li>
+                  </>
                 );
               })}
             </ul>

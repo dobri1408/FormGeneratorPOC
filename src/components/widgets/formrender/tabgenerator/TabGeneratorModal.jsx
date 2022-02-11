@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import { Modal, Button } from "antd";
 import { DiffOutlined } from "@ant-design/icons";
 import { Input } from "antd";
-import { siteSchema } from "../../../data/siteschema";
+import { connect } from "react-redux";
+
 import { useHistory } from "react-router-dom";
 function TabGeneratorModal({
   modalTabGenerator,
   setModalTabGenerator,
   pageName,
+  siteSchema
 }) {
   const [tabName, setTabName] = useState("Untitled");
   const history = useHistory();
 
   const handleOk = (table) => {
     let foundIndex = siteSchema.findIndex((x) => x.pageName === pageName);
+
     siteSchema[foundIndex].tabs.push({ tabName: tabName, elements: [] });
     setModalTabGenerator(false);
     //   history.push(`/${pageName}$${tabName}`);
@@ -40,5 +43,14 @@ function TabGeneratorModal({
     </Modal>
   );
 }
-
-export default TabGeneratorModal;
+function mapStateToProps(state) {
+  return {
+    siteSchema: state
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    addNewTab: (payload) => dispatch({ type: ADD_NEW_TAB, payload: payload })
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TabGeneratorModal);

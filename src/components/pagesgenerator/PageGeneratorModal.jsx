@@ -2,19 +2,28 @@ import React, { useState } from "react";
 import { Modal, Button } from "antd";
 import { DiffOutlined } from "@ant-design/icons";
 import { Input } from "antd";
-import { siteSchema } from "../../data/siteschema";
+
 import { useHistory } from "react-router-dom";
-function PageGeneratorModal({ modalPageGenerator, setModalPageGenerator }) {
+import { ADD_NEW_PAGE } from "../../redux/constants";
+import { connect } from "react-redux";
+function PageGeneratorModal({
+  modalPageGenerator,
+  setModalPageGenerator,
+  country,
+  addNewPage
+}) {
   const [pageName, setPageName] = useState("Untitled");
   const history = useHistory();
 
-  const handleOk = (table) => {
-    siteSchema.push({
-      pageName: pageName,
-      tabs: [{ tabName: "start", elements: [] }],
-    });
+  const handleOk = () => {
+    console.log(addNewPage);
+    const payload = {
+      country: country,
+      newPage: { pageName: pageName, tabs: [] }
+    };
+    addNewPage(payload);
+    history.push(`/${country}/${pageName}`);
     setModalPageGenerator(false);
-    history.push(`/${pageName}`);
   };
 
   const handleCancel = () => {
@@ -38,5 +47,10 @@ function PageGeneratorModal({ modalPageGenerator, setModalPageGenerator }) {
     </Modal>
   );
 }
+function mapDispatchToProps(dispatch) {
+  return {
+    addNewPage: (payload) => dispatch({ type: ADD_NEW_PAGE, payload: payload })
+  };
+}
 
-export default PageGeneratorModal;
+export default connect(null, mapDispatchToProps)(PageGeneratorModal);

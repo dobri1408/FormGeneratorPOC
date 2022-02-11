@@ -2,32 +2,47 @@ import React, { useState, useEffect } from "react";
 import { Layout } from "antd";
 import { useParams } from "react-router-dom";
 import { PageHeader, Button } from "antd";
-import { siteSchema } from "../../schemas";
+
 import { v4 as uuidv4 } from "uuid";
 import TableGeneratorModal from "../modals/TableGeneratorModal";
 import FormGeneratorModal from "../modals/FormGeneratorModal";
 import FieldGenerator from "../FieldGenerator";
 import Navbar from "../pagesnavigation/Navbar";
+import { connect } from "react-redux";
+import { countries } from "../../data/countries";
 import {
   openErrorNotification,
-  openSuccessNotification,
+  openSuccessNotification
 } from "../notification/SaveNotification";
 const { Header, Content } = Layout;
-function PageRender({ modalTableGenerator, setModalTableGenerator }) {
-  let { country,pageName } = useParams();
+function PageRender({
+  modalTableGenerator,
+  setModalTableGenerator,
+  setSelectedCountry,
+  setCountryCode,
+  siteSchema
+}) {
+  let { country, pageName } = useParams();
   const countrySchema = siteSchema[country];
-  console.log(countrySchema)
+
   const [tabName, setTabName] = useState("");
   const [tabSchema, setTabSchema] = useState([]);
   const [pageSchema, setPageSchema] = useState([]);
   const [configurationQuill, setConfigurationQuill] = useState({
     modules: {
-      toolbar: false, // Snow includes toolbar by default
+      toolbar: false // Snow includes toolbar by default
     },
-    readOnly: true,
+    readOnly: true
   });
   const [modalFormGenerator, setModalFormGenerator] = useState(false);
   useEffect(() => {
+    if (country) {
+      let countryCode = countries.find(
+        (element) => element.countryName.toLowerCase() === country
+      ).countryCode;
+      setSelectedCountry(country);
+      setCountryCode(countryCode);
+    }
     const url = window.location.href;
     const lastSegment = url.split("/").pop();
     if (lastSegment === pageName) {
@@ -50,7 +65,9 @@ function PageRender({ modalTableGenerator, setModalTableGenerator }) {
 
   useEffect(() => {
     if (!pageName.length) return;
-    setPageSchema(countrySchema.find((element) => element.pageName === pageName));
+    setPageSchema(
+      countrySchema.find((element) => element.pageName === pageName)
+    );
   }, [pageName, countrySchema]);
   useEffect(() => {
     if (pageSchema.length === 0 || tabName.length === 0) return;
@@ -81,7 +98,7 @@ function PageRender({ modalTableGenerator, setModalTableGenerator }) {
                 countrySchema[foundIndex].tabs[tabIndex]?.elements?.push({
                   type: "quill",
                   id: uuidv4(),
-                  content: {},
+                  content: {}
                 });
               }}
             >
@@ -111,9 +128,9 @@ function PageRender({ modalTableGenerator, setModalTableGenerator }) {
               onClick={() => {
                 setConfigurationQuill({
                   modules: {
-                    toolbar: false, // Snow includes toolbar by default
+                    toolbar: false // Snow includes toolbar by default
                   },
-                  readOnly: true,
+                  readOnly: true
                 });
 
                 checkErrors()
@@ -122,7 +139,7 @@ function PageRender({ modalTableGenerator, setModalTableGenerator }) {
               }}
             >
               Save
-            </Button>,
+            </Button>
           ]}
         />
       </Header>
@@ -130,7 +147,12 @@ function PageRender({ modalTableGenerator, setModalTableGenerator }) {
       {pageName.length && (
         <>
           {" "}
-          <Navbar pageName={pageName} currentTab={tabName} countrySchema={countrySchema} country={country}/>
+          <Navbar
+            pageName={pageName}
+            currentTab={tabName}
+            countrySchema={countrySchema}
+            country={country}
+          />
           <TableGeneratorModal
             modalTableGenerator={modalTableGenerator}
             setModalTableGenerator={setModalTableGenerator}
@@ -154,7 +176,7 @@ function PageRender({ modalTableGenerator, setModalTableGenerator }) {
             style={{
               display: "inline-block",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "center"
             }}
           >
             <FieldGenerator
@@ -170,5 +192,9 @@ function PageRender({ modalTableGenerator, setModalTableGenerator }) {
     </div>
   );
 }
-
-export default PageRender;
+function mapStateToProps(state) {
+  return {
+    siteSchema: state
+  };
+}
+export default connect(mapStateToProps, null)(PageRender);
