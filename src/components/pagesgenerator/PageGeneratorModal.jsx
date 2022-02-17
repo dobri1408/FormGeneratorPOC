@@ -10,16 +10,15 @@ function PageGeneratorModal({
   modalPageGenerator,
   setModalPageGenerator,
   country,
-  addNewPage
+  addNewPage,
 }) {
   const [pageName, setPageName] = useState("Untitled");
   const history = useHistory();
 
   const handleOk = () => {
-    console.log(addNewPage);
     const payload = {
       country: country,
-      newPage: { pageName: pageName, tabs: [] }
+      newPage: { pageName: pageName, tabs: [] },
     };
     addNewPage(payload);
     history.push(`/${country}/${pageName}`);
@@ -49,7 +48,7 @@ function PageGeneratorModal({
 }
 function mapDispatchToProps(dispatch) {
   return {
-    addNewPage: (payload) => dispatch({ type: ADD_NEW_PAGE, payload: payload })
+    addNewPage: (payload) => dispatch({ type: ADD_NEW_PAGE, payload: payload }),
   };
 }
 

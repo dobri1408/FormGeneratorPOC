@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Button } from "antd";
 import { TableOutlined } from "@ant-design/icons";
 import { tables } from "../../data/index";
-import { siteSchema } from "../../data/siteschema";
+
 import "../../styles/tablegenerator.css";
 function TableGeneratorModal({
   modalTableGenerator,
@@ -11,17 +11,7 @@ function TableGeneratorModal({
   tabName,
 }) {
   const handleOk = (table) => {
-    let foundIndex = siteSchema.findIndex((x) => x.pageName === pageName);
-
-    let tabIndex = siteSchema[foundIndex].tabs.findIndex(
-      (x) => x.tabName === tabName
-    );
-    !("elements" in siteSchema[foundIndex].tabs[tabIndex]) &&
-      (siteSchema[foundIndex].tabs[tabIndex].elements = []);
-    siteSchema[foundIndex].tabs[tabIndex]?.elements?.push({
-      type: "table",
-      nameTable: table.name,
-    });
+    //To DO
 
     setModalTableGenerator(false);
   };

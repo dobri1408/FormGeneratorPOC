@@ -5,5 +5,6 @@ import { schemaRomania } from "./romania";
 export const siteSchema = {
   romania: schemaRomania,
   canada: schemaCanada,
-  denmark: schemaDenmark
+  denmark: schemaDenmark,
+  elements: [],
 };

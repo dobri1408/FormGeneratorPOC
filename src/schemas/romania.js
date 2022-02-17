@@ -1,8 +1,11 @@
-export const  schemaRomania=[
+export const schemaRomania = [
   {
     pageName: "start",
     tabs: [
-      { tabName: "start", elements: [{ type: "table", nameTable: "Table1" }] },
+      {
+        tabName: "start",
+        elements: [{ type: "table", nameTable: "tableSurfaceCounties", id: 4 }],
+      },
     ],
   },
   {
@@ -13,7 +16,7 @@ export const  schemaRomania=[
         elements: [
           {
             type: "quill",
-            id: 1,
+            id: 3,
             content: {
               ops: [
                 {
@@ -58,11 +61,13 @@ export const  schemaRomania=[
               ],
             },
           },
-          { type: "table", nameTable: "Table1" },
-          { type: "table", nameTable: "Table1" },
+          { type: "table", nameTable: "tableSurfaceCountries", id: 1 },
         ],
       },
-      { tabName: "Brasov", elements: [{ type: "table", nameTable: "Table1" }] },
+      {
+        tabName: "Brasov",
+        elements: [{ type: "table", nameTable: "tableSurfaceCounties", id: 2 }],
+      },
     ],
   },
 ];

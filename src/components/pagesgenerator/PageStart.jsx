@@ -30,7 +30,7 @@ function PageStart({ setSelectedCountry, setCountryCode }) {
             style={{
               display: "inline-block",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             <ul className="list-country">
@@ -54,7 +54,7 @@ function PageStart({ setSelectedCountry, setCountryCode }) {
                           width: "180px",
                           height: "100px",
 
-                          border: "1px solid #efefef"
+                          border: "1px solid #efefef",
                         }}
                       />
                       <h3>{country.countryName}</h3>

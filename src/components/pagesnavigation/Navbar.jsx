@@ -11,7 +11,6 @@ function Navbar({ pageName, country, siteSchema }) {
   const [modalTabGenerator, setModalTabGenerator] = useState(0);
   const [tabs, setTabs] = useState([]);
   useEffect(() => {
-    console.log(siteSchema[country]);
     setTabs(
       siteSchema[country].find((element) => element.pageName === pageName).tabs
     );
@@ -54,7 +53,7 @@ function Navbar({ pageName, country, siteSchema }) {
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state
+    siteSchema: state,
   };
 }
 export default connect(mapStateToProps, null)(Navbar);

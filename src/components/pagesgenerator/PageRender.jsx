@@ -10,17 +10,20 @@ import FieldGenerator from "../FieldGenerator";
 import Navbar from "../pagesnavigation/Navbar";
 import { connect } from "react-redux";
 import { countries } from "../../data/countries";
+import { Validations } from "../Validation";
 import {
   openErrorNotification,
-  openSuccessNotification
+  openSuccessNotification,
 } from "../notification/SaveNotification";
+
 const { Header, Content } = Layout;
 function PageRender({
   modalTableGenerator,
   setModalTableGenerator,
   setSelectedCountry,
   setCountryCode,
-  siteSchema
+  siteSchema,
+  addNewElement,
 }) {
   let { country, pageName } = useParams();
   const countrySchema = siteSchema[country];
@@ -30,11 +33,13 @@ function PageRender({
   const [pageSchema, setPageSchema] = useState([]);
   const [configurationQuill, setConfigurationQuill] = useState({
     modules: {
-      toolbar: false // Snow includes toolbar by default
+      toolbar: false, // Snow includes toolbar by default
     },
-    readOnly: true
+    readOnly: true,
   });
   const [modalFormGenerator, setModalFormGenerator] = useState(false);
+
+  ///USEEFFECTS
   useEffect(() => {
     if (country) {
       let countryCode = countries.find(
@@ -49,18 +54,19 @@ function PageRender({
       if (pageSchema?.tabs?.length > 0) setTabName(pageSchema.tabs[0].tabName);
     } else setTabName(lastSegment);
   }, [pageSchema, window.location.href]);
+
   const checkErrors = () => {
-    let foundIndex = countrySchema.findIndex((x) => x.pageName === pageName);
-    let tabIndex = countrySchema[foundIndex].tabs.findIndex(
-      (x) => x.tabName === tabName
-    );
-    !("errors" in countrySchema[foundIndex].tabs[tabIndex]) &&
-      (countrySchema[foundIndex].tabs[tabIndex].errors = []);
-    if (countrySchema[foundIndex].tabs[tabIndex].errors.length > 0) {
-      return 1;
+    let errors = false;
+    for (let key in Validations[country]) {
+      let result = Validations[country][key](siteSchema.elements);
+      console.log(result);
+      if (result.error === true) {
+        openErrorNotification(result.errorMessage);
+        errors = true;
+      }
     }
 
-    return 0;
+    return errors;
   };
 
   useEffect(() => {
@@ -98,7 +104,7 @@ function PageRender({
                 countrySchema[foundIndex].tabs[tabIndex]?.elements?.push({
                   type: "quill",
                   id: uuidv4(),
-                  content: {}
+                  content: {},
                 });
               }}
             >
@@ -128,18 +134,16 @@ function PageRender({
               onClick={() => {
                 setConfigurationQuill({
                   modules: {
-                    toolbar: false // Snow includes toolbar by default
+                    toolbar: false, // Snow includes toolbar by default
                   },
-                  readOnly: true
+                  readOnly: true,
                 });
 
-                checkErrors()
-                  ? openErrorNotification()
-                  : openSuccessNotification();
+                if (checkErrors() === 0) openSuccessNotification();
               }}
             >
               Save
-            </Button>
+            </Button>,
           ]}
         />
       </Header>
@@ -176,7 +180,7 @@ function PageRender({
             style={{
               display: "inline-block",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             <FieldGenerator
@@ -194,7 +198,8 @@ function PageRender({
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state
+    siteSchema: state,
   };
 }
+
 export default connect(mapStateToProps, null)(PageRender);

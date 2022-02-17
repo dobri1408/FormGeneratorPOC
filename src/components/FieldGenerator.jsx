@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Widgets } from "./widgets";
+import { connect } from "react-redux";
 function FieldGenerator({
   tabSchema,
   pageName,
   configurationQuill,
   setConfigurationQuill,
   tabName,
+  siteSchema,
 }) {
   return (
     <>
@@ -17,11 +19,16 @@ function FieldGenerator({
           pageName: pageName,
           tabName: tabName,
           setConfigurationQuill: setConfigurationQuill,
+          id: block.id,
         };
         return Widgets[block.type](props);
       })}
     </>
   );
 }
-
-export default FieldGenerator;
+function mapStateToProps(state) {
+  return {
+    siteSchema: state,
+  };
+}
+export default connect(mapStateToProps, null)(FieldGenerator);

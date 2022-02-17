@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button } from "antd";
 import { DiffOutlined } from "@ant-design/icons";
 import { Input } from "antd";
-import { siteSchema } from "../../data/siteschema";
+
 import { useHistory } from "react-router-dom";
 function TabGeneratorModal({
   modalTabGenerator,
@@ -13,8 +13,7 @@ function TabGeneratorModal({
   const history = useHistory();
 
   const handleOk = (table) => {
-    let foundIndex = siteSchema.findIndex((x) => x.pageName === pageName);
-    siteSchema[foundIndex].tabs.push({ tabName: tabName, elements: [] });
+    //todo
     setModalTabGenerator(false);
     //   history.push(`/${pageName}$${tabName}`);
   };

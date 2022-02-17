@@ -31,12 +31,7 @@ export const Widgets = {
   table: (props) => {
     return (
       <>
-        <TableRender
-          pageName={props.pageName}
-          tabName={props.tabName}
-          nameTable={props.block.nameTable}
-          indexTable={props.index}
-        />
+        <TableRender id={props.id} />
         <br />
         <br />
       </>

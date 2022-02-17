@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import "./TextEditor.css";
-import { siteSchema } from "../../../data/siteschema";
+
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
   [{ font: [] }],
@@ -44,20 +44,7 @@ function TextEditor({
     });
   };
   const saveContents = () => {
-    let foundIndex = siteSchema.findIndex((x) => x.pageName === pageName);
-
-    let tabIndex = siteSchema[foundIndex].tabs.findIndex(
-      (x) => x.tabName === tabName
-    );
-    !("elements" in siteSchema[foundIndex].tabs[tabIndex]) &&
-      (siteSchema[foundIndex].tabs[tabIndex].elements = []);
-
-    const quillIndex = siteSchema[foundIndex].tabs[
-      tabIndex
-    ]?.elements?.findIndex((x) => x.id === id);
-
-    siteSchema[foundIndex].tabs[tabIndex].elements[quillIndex].content =
-      quill.getContents();
+    //    To DO
   };
   useEffect(() => {
     if (quill == null) return;

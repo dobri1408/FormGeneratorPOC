@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Button } from "antd";
 import { TableOutlined } from "@ant-design/icons";
 import { forms } from "../../data/index";
-import { siteSchema } from "../../data/siteschema";
+
 import "../../styles/tablegenerator.css";
 function FormGeneratorModal({
   modalFormGenerator,
@@ -11,18 +11,7 @@ function FormGeneratorModal({
   tabName,
 }) {
   const handleOk = (form) => {
-    let foundIndex = siteSchema.findIndex((x) => x.pageName === pageName);
-
-    let tabIndex = siteSchema[foundIndex].tabs.findIndex(
-      (x) => x.tabName === tabName
-    );
-    !("elements" in siteSchema[foundIndex].tabs[tabIndex]) &&
-      (siteSchema[foundIndex].tabs[tabIndex].elements = []);
-    siteSchema[foundIndex].tabs[tabIndex]?.elements?.push({
-      type: "form",
-      nameForm: form.name,
-    });
-
+    //TODO
     setModalFormGenerator(false);
   };
 
