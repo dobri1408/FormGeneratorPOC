@@ -7,7 +7,6 @@ function FieldGenerator({
   configurationQuill,
   setConfigurationQuill,
   tabName,
-  siteSchema,
 }) {
   return (
     <>

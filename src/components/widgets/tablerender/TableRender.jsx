@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector, useDispatch } from "react-redux";
 import { Table, Input, Button, Popconfirm, Form } from "antd";
-import { ADD_ROW_TO_TABLE } from "../../../redux/constants";
+import { ADD_ROW_TO_TABLE, UPDATE_TABLE } from "../../../redux/constants";
 import "./TableRender.css";
 
 const EditableContext = React.createContext(null);
@@ -23,6 +23,7 @@ const EditableCell = ({
   dataIndex,
   record,
   handleSave,
+  tableData,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
@@ -85,60 +86,51 @@ const EditableCell = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-function TableRender({ id, elements, addNewRow }) {
-  const [tableData, setTableData] = useState();
-  const [count, setCount] = useState(0);
-
+function TableRender({ id }) {
+  const tableData = useSelector((state) =>
+    state.elements.find((element) => element.id === id)
+  );
+  const dataTable = useSelector(
+    (state) => state.elements.find((element) => element.id === id).data
+  );
+  const dispatch = useDispatch();
   const handleAdd = () => {
-    const newData = {};
-    newData.key = (count + 1).toString();
-    tableData.schema.forEach((column) => {
-      newData[column.dataIndex] = "Bucuresti";
-    });
-    let newElementsArray = [...elements];
-    const tableObject = Object.assign(tableData);
-    tableObject.data.push(newData);
-    let elementsIndexTable = newElementsArray.findIndex(
-      (element) => element.id === id
-    );
-    newElementsArray[elementsIndexTable] = tableObject;
-    setTableData({ ...tableData, data: [...tableData.data, tableObject] });
-    addNewRow(newElementsArray);
+    // const newData = {};
+    // newData.key = (count + 1).toString();
+    // tableData.schema.forEach((column) => {
+    //   newData[column.dataIndex] = "Bucuresti";
+    // });
+    // let newElementsArray = [...elements];
+    // const tableObject = Object.assign(tableData);
+    // tableObject.data.push(newData);
+    // let elementsIndexTable = newElementsArray.findIndex(
+    //   (element) => element.id === id
+    // );
+    // newElementsArray[elementsIndexTable] = tableObject;
+    // addNewRow(newElementsArray);
   };
-  const handleAddNewData = (tableObject) => {
-    setTableData(tableObject);
-    console.log(tableData);
-  };
-  const handleSave = (row) => {
+  //  const handleAddNewData = (tableObject) => {};
+  const addNewRow = (row) => {
     const newData = Object.assign(tableData);
     const index = newData.data.findIndex((item) => row.key === item.key);
     const item = newData.data[index];
     newData.data.splice(index, 1, { ...item, ...row });
 
-    let newElementsArray = [...elements];
-    let elementsIndexTable = newElementsArray.findIndex(
-      (element) => element.id === id
-    );
-
-    const tableObject = Object.assign(newData);
-    newElementsArray[elementsIndexTable] = tableObject;
-    addNewRow(newElementsArray);
-    handleAddNewData(tableObject);
+    dispatch({
+      type: UPDATE_TABLE,
+      payload: { id: id, tableData: newData },
+    });
+  };
+  const handleSave = (row) => {
+    addNewRow(row);
   };
 
-  useEffect(() => {
-    setTableData(elements.find((element) => element.id === id));
-  }, []);
-  useEffect(() => {
-    if (tableData) setCount(tableData.data.length);
-  }, [tableData]);
   const components = {
     body: {
       row: EditableRow,
       cell: EditableCell,
     },
   };
-
   const columns = tableData?.schema.map((col) => {
     if (!col.editable) {
       return col;
@@ -154,42 +146,28 @@ function TableRender({ id, elements, addNewRow }) {
       }),
     };
   });
-  console.log(tableData);
+  console.log({ dataTable });
   return (
     <>
-      {tableData && (
-        <>
-          <Button
-            onClick={handleAdd}
-            type="primary"
-            style={{
-              marginBottom: 16,
-            }}
-          >
-            Add a row
-          </Button>
-          <Table
-            components={components}
-            rowClassName={() => "editable-row"}
-            bordered
-            dataSource={elements.find((element) => element.id === id).data}
-            columns={columns}
-          />
-        </>
-      )}
+      {JSON.stringify(dataTable)}
+      <Button
+        onClick={handleAdd}
+        type="primary"
+        style={{
+          marginBottom: 16,
+        }}
+      >
+        Add a row
+      </Button>
+      <Table
+        components={components}
+        rowClassName={() => "editable-row"}
+        bordered
+        dataSource={dataTable}
+        columns={columns}
+      />
     </>
   );
 }
 
-function mapStateToProps(state) {
-  return {
-    elements: state.elements,
-  };
-}
-function mapDispatchToProps(dispatch) {
-  return {
-    addNewRow: (payload) =>
-      dispatch({ type: ADD_ROW_TO_TABLE, payload: payload }),
-  };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(TableRender);
+export default TableRender;

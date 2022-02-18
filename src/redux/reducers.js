@@ -5,6 +5,7 @@ import {
   ADD_NEW_TAB,
   ADD_ELEMENT_TO_SYSTEM,
   ADD_ROW_TO_TABLE,
+  UPDATE_TABLE,
 } from "./constants";
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -27,10 +28,16 @@ export const reducer = (state = initialState, action) => {
         ...state,
         elements: [...state.elements, action.payload],
       };
-    case ADD_ROW_TO_TABLE:
+    case UPDATE_TABLE:
+      let newElementsArray = [...state.elements];
+      let elementsIndexTable = newElementsArray.findIndex(
+        (element) => element.id === action.payload.id
+      );
+      newElementsArray[elementsIndexTable] = action.payload.tableData;
+
       return {
         ...state,
-        elements: action.payload,
+        elements: newElementsArray,
       };
     default:
       return state;

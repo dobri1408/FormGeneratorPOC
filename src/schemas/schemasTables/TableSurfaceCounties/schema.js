@@ -2,13 +2,13 @@ const columns = [
   {
     title: "Name Of County",
     dataIndex: "name",
-    key: "name",
   },
   {
     title: "Surface of County",
     dataIndex: "surface",
-    key: "surface",
+
     editable: true,
+    // validation: ["required", "number", "min=30", "max=100", "not=50"], //all these are function names
   },
 ];
 
@@ -17,7 +17,6 @@ const dataSource = [
     key: "1",
     name: "Brasov",
     surface: 128,
-    address: "10 Downing Street",
   },
   {
     key: "2",
