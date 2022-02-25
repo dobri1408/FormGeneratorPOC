@@ -3,10 +3,10 @@ import TableRender from "./tablerender/TableRender";
 import TextEditor from "./quill/TextEditor";
 
 export const Widgets = {
-  form: (props) => {
+  input: (props) => {
     return (
       <>
-        <FormRender formName={props.block.nameForm} />
+        <FormRender id={props.id} />
         <br />
         <br />
       </>

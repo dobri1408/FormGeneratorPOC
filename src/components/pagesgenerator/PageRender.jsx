@@ -139,7 +139,7 @@ function PageRender({
                   readOnly: true,
                 });
 
-                if (checkErrors() === 0) openSuccessNotification();
+                if (checkErrors() === false) openSuccessNotification();
               }}
             >
               Save

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { connect, useSelector, useDispatch } from "react-redux";
 import { Table, Input, Button, Popconfirm, Form } from "antd";
-import { ADD_ROW_TO_TABLE, UPDATE_TABLE } from "../../../redux/constants";
+import { INSERT_ROW, UPDATE_TABLE } from "../../../redux/constants";
 import "./TableRender.css";
-
+import * as Validations from "../../../CellValidationsFunction/index";
+import { CiOutlined } from "@ant-design/icons";
 const EditableContext = React.createContext(null);
 const EditableRow = ({ index, ...props }) => {
   const [form] = Form.useForm();
@@ -24,6 +25,8 @@ const EditableCell = ({
   record,
   handleSave,
   tableData,
+  validator,
+  defaultValuesRow,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
@@ -51,7 +54,6 @@ const EditableCell = ({
       console.log("Save failed:", errInfo);
     }
   };
-
   let childNode = children;
 
   if (editable) {
@@ -66,6 +68,9 @@ const EditableCell = ({
             required: true,
             message: `${title} is required.`,
           },
+          {
+            validator: validator,
+          },
         ]}
       >
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
@@ -74,7 +79,12 @@ const EditableCell = ({
       <div
         className="editable-cell-value-wrap"
         style={{
-          paddingRight: 24,
+          paddingRight: "24",
+          backgroundColor:
+            defaultValuesRow !== undefined &&
+            children[1] != defaultValuesRow[dataIndex]
+              ? "gold"
+              : "white",
         }}
         onClick={toggleEdit}
       >
@@ -90,30 +100,25 @@ function TableRender({ id }) {
   const tableData = useSelector((state) =>
     state.elements.find((element) => element.id === id)
   );
-  const dataTable = useSelector(
-    (state) => state.elements.find((element) => element.id === id).data
-  );
+
+  const [numRows, setNumRows] = useState(tableData.data.length);
+  const [validationsOfTable, setValidationsOfTable] = useState({});
+
   const dispatch = useDispatch();
   const handleAdd = () => {
-    // const newData = {};
-    // newData.key = (count + 1).toString();
-    // tableData.schema.forEach((column) => {
-    //   newData[column.dataIndex] = "Bucuresti";
-    // });
-    // let newElementsArray = [...elements];
-    // const tableObject = Object.assign(tableData);
-    // tableObject.data.push(newData);
-    // let elementsIndexTable = newElementsArray.findIndex(
-    //   (element) => element.id === id
-    // );
-    // newElementsArray[elementsIndexTable] = tableObject;
-    // addNewRow(newElementsArray);
+    const newRow = {};
+    newRow.key = numRows + 1;
+    setNumRows(numRows + 1);
+    tableData.schema.forEach((column) => {
+      newRow[column.dataIndex] = null;
+    });
+    insertRow(newRow, newRow);
   };
-  //  const handleAddNewData = (tableObject) => {};
-  const addNewRow = (row) => {
+  const updateRow = (row) => {
     const newData = Object.assign(tableData);
     const index = newData.data.findIndex((item) => row.key === item.key);
     const item = newData.data[index];
+
     newData.data.splice(index, 1, { ...item, ...row });
 
     dispatch({
@@ -121,8 +126,43 @@ function TableRender({ id }) {
       payload: { id: id, tableData: newData },
     });
   };
+  const insertRow = (row, defaultRow = null) => {
+    const newData = Object.assign(tableData);
+    newData.data.push(row);
+    if (defaultRow != null) newData.defaultValues.push(defaultRow);
+    dispatch({
+      type: UPDATE_TABLE,
+      payload: { id: id, tableData: newData },
+    });
+  };
+  //CELL VALIDATION
+  useEffect(() => {
+    const newObjectValidations = {};
+    tableData.schema?.forEach((column) => {
+      newObjectValidations[column?.dataIndex] = [];
+      column?.validation?.forEach((validation) => {
+        newObjectValidations[column.dataIndex].push({
+          nameFunction: validation?.substr(
+            0,
+            validation?.indexOf("=") !== -1
+              ? validation?.indexOf("=")
+              : validation?.length
+          ),
+          parameter:
+            validation?.indexOf("=") !== -1
+              ? validation?.substr(
+                  validation?.indexOf("=") + 1,
+                  validation?.length
+                )
+              : null,
+        });
+      });
+    });
+    setValidationsOfTable(newObjectValidations);
+  }, [tableData]);
+  //SAVE MODIFICATIONS ON CELL
   const handleSave = (row) => {
-    addNewRow(row);
+    updateRow(row);
   };
 
   const components = {
@@ -143,13 +183,35 @@ function TableRender({ id }) {
         dataIndex: col.dataIndex,
         title: col.title,
         handleSave: handleSave,
+        validator: validator,
+        defaultValuesRow: tableData.defaultValues.find(
+          (row) => row.key === record.key
+        ),
       }),
     };
   });
-  console.log({ dataTable });
+  const validator = (rule, value, callback) => {
+    const column = rule.field;
+    validationsOfTable[column]?.forEach((validation) => {
+      let result;
+      if (validation.parameter === null)
+        result = Validations[validation.nameFunction](value);
+      else
+        result = Validations[validation.nameFunction](
+          value,
+          validation.parameter
+        );
+      if (result !== true) {
+        callback(result);
+        return;
+      }
+    });
+
+    callback();
+  };
+
   return (
     <>
-      {JSON.stringify(dataTable)}
       <Button
         onClick={handleAdd}
         type="primary"
@@ -163,7 +225,7 @@ function TableRender({ id }) {
         components={components}
         rowClassName={() => "editable-row"}
         bordered
-        dataSource={dataTable}
+        dataSource={[...tableData.data]}
         columns={columns}
       />
     </>

@@ -4,8 +4,9 @@ import {
   ADD_NEW_PAGE,
   ADD_NEW_TAB,
   ADD_ELEMENT_TO_SYSTEM,
-  ADD_ROW_TO_TABLE,
+  UPDATE_SCHEMA_TABLE,
   UPDATE_TABLE,
+  UPDATE_FORM,
 } from "./constants";
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -38,6 +39,26 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         elements: newElementsArray,
+      };
+    case UPDATE_SCHEMA_TABLE:
+      let elementsArray = [...state.elements];
+      let indexOfTable = elementsArray.findIndex(
+        (element) => element.id === action.payload.id
+      );
+      elementsArray[indexOfTable].schema = [...action.payload.schema];
+      return {
+        ...state,
+        elements: elementsArray,
+      };
+    case UPDATE_FORM:
+      let newElementsArray2 = [...state.elements];
+      let elementsIndexForm = newElementsArray2.findIndex(
+        (element) => element.id === action.payload.id
+      );
+      newElementsArray2[elementsIndexForm] = action.payload.form;
+      return {
+        ...state,
+        elements: newElementsArray2,
       };
     default:
       return state;

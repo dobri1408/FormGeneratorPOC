@@ -1,14 +1,44 @@
 import React from "react";
-import Form from "@rjsf/antd";
-function FormRender({ formName }) {
-  const uischema = require(`../../../data/forms/${formName}/uischema.json`);
-  const schema = require(`../../../data/forms/${formName}/schema.json`);
-  const { dataForm } = require(`../../../data/forms/${formName}/data.js`);
+import { JsonForms } from "@jsonforms/react";
+import {
+  materialCells,
+  materialRenderers,
+} from "@jsonforms/material-renderers";
+import { useSelector, useDispatch } from "react-redux";
+import { UPDATE_FORM } from "../../../redux/constants";
+
+function FormRender({ id }) {
+  const dispatch = useDispatch();
+  const uiSchema = useSelector(
+    (state) => state.elements.find((element) => element.id === id).uiSchema
+  );
+  const data = useSelector(
+    (state) => state.elements.find((element) => element.id === id).data
+  );
+  const schema = useSelector(
+    (state) => state.elements.find((element) => element.id === id).schema
+  );
+  const form = useSelector((state) =>
+    state.elements.find((element) => element.id === id)
+  );
+  const updateForm = (data) => {
+    const newObjectForm = Object.assign(form);
+    newObjectForm.data = data;
+    dispatch({
+      type: UPDATE_FORM,
+      payload: { id: id, form: newObjectForm },
+    });
+  };
   return (
-    <div style={{ background: "whitesmoke" }}>
-      <div style={{ padding: "20px" }}>
-        <Form schema={schema} uischema={uischema} data={dataForm} />
-      </div>
+    <div>
+      <JsonForms
+        schema={schema}
+        uischema={uiSchema}
+        data={data}
+        renderers={materialRenderers}
+        cells={materialCells}
+        onChange={({ data, _errors }) => updateForm(data)}
+      />
     </div>
   );
 }

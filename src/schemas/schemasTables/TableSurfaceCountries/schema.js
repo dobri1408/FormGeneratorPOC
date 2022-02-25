@@ -27,4 +27,5 @@ const dataSource = [
 export const tableSurfaceCountries = {
   schema: columns,
   initialData: dataSource,
+  dynamic: false,
 };

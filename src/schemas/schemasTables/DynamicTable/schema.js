@@ -1,7 +1,8 @@
 const columns = [
   {
-    title: "Name Of County",
-    dataIndex: "name",
+    title: "",
+    dataIndex: "1",
+    importValues: { id: 4, key: 1, dataIndex: "name" },
     editable: true,
   },
   {
@@ -26,8 +27,14 @@ const dataSource = [
   },
 ];
 
-export const tableSurfaceCounties = {
+export const dynamicTable = {
   schema: columns,
   initialData: dataSource,
-  dynamic: false,
+  dynamic: true,
+  visibility: [
+    {
+      id: 8,
+      dependencies: [{ key: "exempleRadioEnum", value: "Vreau Tabel" }],
+    },
+  ],
 };

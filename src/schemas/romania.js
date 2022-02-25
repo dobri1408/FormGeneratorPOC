@@ -4,7 +4,27 @@ export const schemaRomania = [
     tabs: [
       {
         tabName: "start",
-        elements: [{ type: "table", nameTable: "tableSurfaceCounties", id: 4 }],
+        elements: [
+          { type: "table", nameTable: "tableSurfaceCounties", id: 4 },
+          {
+            type: "input",
+            nameInput: "RadioInput",
+            id: 8,
+          },
+          {
+            type: "table",
+            nameTable: "dynamicTable",
+            id: 10,
+            visibility: [
+              {
+                id: 8,
+                dependencies: [
+                  { key: "exampleRadioEnum", value: "Vreau Tabel" },
+                ],
+              },
+            ],
+          },
+        ],
       },
     ],
   },

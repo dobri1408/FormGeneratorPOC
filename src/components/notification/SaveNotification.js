@@ -9,7 +9,7 @@ export const openErrorNotification = (errorMessage) => {
   });
 };
 export const openSuccessNotification = () => {
-  notification["success"]({
+  notification["success"](  {
     message: "Saved",
     description: "The current tab was saved",
   });
