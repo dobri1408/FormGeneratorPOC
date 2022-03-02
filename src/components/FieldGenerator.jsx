@@ -7,18 +7,16 @@ function FieldGenerator({
   configurationQuill,
   setConfigurationQuill,
   tabName,
-  siteSchema,
+  siteSchema
 }) {
   const checkVisibility = (visibility) => {
     let show = true;
-    console.log({ visibility });
+
     visibility.forEach((condition) => {
       const element = siteSchema.elements.find(
         (element) => parseInt(element.id) === parseInt(condition.id)
       );
       condition.dependencies.forEach((dependency) => {
-        console.log(element.data);
-        console.log(dependency.key);
         if (element.data[dependency.key] != dependency.value) show = false;
       });
     });
@@ -28,7 +26,7 @@ function FieldGenerator({
     <>
       {tabSchema?.elements?.map((block, index) => {
         let show = true;
-        console.log({ block });
+
         if (block.visibility) {
           show = false;
           show = checkVisibility(block.visibility);
@@ -40,7 +38,7 @@ function FieldGenerator({
           pageName: pageName,
           tabName: tabName,
           setConfigurationQuill: setConfigurationQuill,
-          id: block.id,
+          id: block.id
         };
         return show && Widgets[block.type](props);
       })}
@@ -49,7 +47,7 @@ function FieldGenerator({
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state,
+    siteSchema: state
   };
 }
 export default connect(mapStateToProps, null)(FieldGenerator);

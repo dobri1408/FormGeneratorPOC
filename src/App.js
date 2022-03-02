@@ -32,13 +32,24 @@ function App({ siteSchema, addNewElement, updateSchema }) {
     ]?.data.findIndex(
       (row) => parseInt(row?.key) === parseInt(specifedTable?.key)
     );
-    console.log(rowIndexOfSpecifedTable);
-    console.log(
-      siteSchema?.elements[specifedTableIndex]?.data[rowIndexOfSpecifedTable]
-    );
+
     return siteSchema?.elements[specifedTableIndex]?.data[
       rowIndexOfSpecifedTable
     ][specifedTable.dataIndex];
+  };
+  const getValuesOfAColumn = (details) => {
+    const id = details?.id;
+    const dataIndex = details?.dataIndex;
+    const specifedTable = Object.assign(
+      siteSchema?.elements?.find(
+        (block) => block?.type === "table" && block?.id === id
+      )
+    );
+    const values = new Array();
+    specifedTable.data.forEach((row) => {
+      values.push(Object.assign(row[dataIndex]));
+    });
+    return values;
   };
   useEffect(() => {
     //insert each element of country in redux sistem
@@ -58,17 +69,16 @@ function App({ siteSchema, addNewElement, updateSchema }) {
                 id: element.id,
                 nameTable: element.nameTable,
                 defaultValues: [
-                  ...TablesSchemas[element.nameTable].initialData,
+                  ...TablesSchemas[element.nameTable].initialData
                 ],
                 data: [...TablesSchemas[element.nameTable].initialData],
                 schema: Object.assign(TablesSchemas[element.nameTable].schema),
+                getColumns: element.getColumns
               };
-              console.log(TablesSchemas[element.nameTable]);
               if (TablesSchemas[element.nameTable].visibility?.length > 0) {
                 payload.visibility = [
-                  ...TablesSchemas[element.nameTable]?.visibility,
+                  ...TablesSchemas[element.nameTable]?.visibility
                 ];
-                console.log({ payload });
               }
               addNewElement(payload);
             }
@@ -87,7 +97,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
                 uiSchema: Object.assign(
                   InputsSchemas[element.nameInput].uiSchema
                 ),
-                schema: Object.assign(InputsSchemas[element.nameInput].schema),
+                schema: Object.assign(InputsSchemas[element.nameInput].schema)
               };
 
               addNewElement(payload);
@@ -101,14 +111,15 @@ function App({ siteSchema, addNewElement, updateSchema }) {
   useEffect(() => {
     // INEFICIENT
     //UPDATE COLUMNS OF DYNAMIC TABLES
-    console.log("intru");
+
     const tables = siteSchema.elements.filter(
       (element) => element?.type === "table"
     );
     const importValuesTables = tables.filter(
       (table) => TablesSchemas[table.nameTable]?.dynamic === true
     );
-    console.log(importValuesTables);
+    console.log({ importValuesTables });
+    if (!importValuesTables) return;
     importValuesTables.forEach((table) => {
       const schemaOfTable = [...TablesSchemas[table.nameTable].schema];
       const idOfTable = table.id;
@@ -118,18 +129,64 @@ function App({ siteSchema, addNewElement, updateSchema }) {
           //   column.dataIndex = column.title;
         }
       });
-      console.log({ schemaOfTable });
+
       if (
         JSON.stringify(
           siteSchema.elements.find((table) => table.id === idOfTable).schema
         ) !== JSON.stringify(schemaOfTable)
       ) {
         const payload = { id: idOfTable, schema: schemaOfTable };
+        console.log("ind");
         updateSchema(payload);
       }
     });
+
     //TO DO action to update schemas of tables
-  }, [getValueOfSpecifedTable, siteSchema.elements]);
+  }, [siteSchema.elements]);
+  useEffect(() => {
+    const tables = siteSchema.elements.filter(
+      (element) => element?.type === "table"
+    );
+    const getColumnsTables = tables.filter(
+      (table) => table.getColumns !== undefined
+    );
+    console.log({ getColumnsTables });
+    getColumnsTables.forEach((table) => {
+      const idOfImportTable = table?.getColumns?.id;
+      const dataIndexOfImportTable = table?.getColumns?.dataIndex;
+      console.log({ idOfImportTable, dataIndexOfImportTable });
+      const values = [
+        ...getValuesOfAColumn({
+          id: idOfImportTable,
+          dataIndex: dataIndexOfImportTable
+        })
+      ];
+      const newSchemaObject = [...table.schema];
+      values.forEach((value) => {
+        newSchemaObject.push({
+          title: JSON.stringify(value),
+          editable: true,
+          dataIndex: JSON.stringify(value)
+        });
+      });
+      console.log({ newSchemaObject });
+      const newTable = Object.assign(table);
+      newTable.schema = [...newSchemaObject];
+      console.log("aici");
+
+      if (
+        JSON.stringify(
+          siteSchema.elements.find((tablex) => tablex.id === table.id).schema
+        ) != JSON.stringify(newTable.schema)
+      ) {
+        console.log("nttrtr");
+        console.log(newTable.schema);
+        const payload = { id: table.id, schema: newSchemaObject };
+        updateSchema(payload);
+      }
+    });
+  }, [siteSchema.elements]);
+  ///DESPARE in DOUA USEFEECT
   return (
     <>
       <Router>
@@ -176,7 +233,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state,
+    siteSchema: state
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -184,7 +241,7 @@ function mapDispatchToProps(dispatch) {
     addNewElement: (payload) =>
       dispatch({ type: ADD_ELEMENT_TO_SYSTEM, payload: payload }),
     updateSchema: (payload) =>
-      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload }),
+      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload })
   };
 }
 

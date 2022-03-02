@@ -13,7 +13,7 @@ import { countries } from "../../data/countries";
 import { Validations } from "../Validation";
 import {
   openErrorNotification,
-  openSuccessNotification,
+  openSuccessNotification
 } from "../notification/SaveNotification";
 
 const { Header, Content } = Layout;
@@ -23,7 +23,7 @@ function PageRender({
   setSelectedCountry,
   setCountryCode,
   siteSchema,
-  addNewElement,
+  addNewElement
 }) {
   let { country, pageName } = useParams();
   const countrySchema = siteSchema[country];
@@ -33,9 +33,9 @@ function PageRender({
   const [pageSchema, setPageSchema] = useState([]);
   const [configurationQuill, setConfigurationQuill] = useState({
     modules: {
-      toolbar: false, // Snow includes toolbar by default
+      toolbar: false // Snow includes toolbar by default
     },
-    readOnly: true,
+    readOnly: true
   });
   const [modalFormGenerator, setModalFormGenerator] = useState(false);
 
@@ -59,7 +59,7 @@ function PageRender({
     let errors = false;
     for (let key in Validations[country]) {
       let result = Validations[country][key](siteSchema.elements);
-      console.log(result);
+
       if (result.error === true) {
         openErrorNotification(result.errorMessage);
         errors = true;
@@ -104,7 +104,7 @@ function PageRender({
                 countrySchema[foundIndex].tabs[tabIndex]?.elements?.push({
                   type: "quill",
                   id: uuidv4(),
-                  content: {},
+                  content: {}
                 });
               }}
             >
@@ -134,16 +134,16 @@ function PageRender({
               onClick={() => {
                 setConfigurationQuill({
                   modules: {
-                    toolbar: false, // Snow includes toolbar by default
+                    toolbar: false // Snow includes toolbar by default
                   },
-                  readOnly: true,
+                  readOnly: true
                 });
 
                 if (checkErrors() === false) openSuccessNotification();
               }}
             >
               Save
-            </Button>,
+            </Button>
           ]}
         />
       </Header>
@@ -180,7 +180,7 @@ function PageRender({
             style={{
               display: "inline-block",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "center"
             }}
           >
             <FieldGenerator
@@ -198,7 +198,7 @@ function PageRender({
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state,
+    siteSchema: state
   };
 }
 

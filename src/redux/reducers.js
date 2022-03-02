@@ -6,7 +6,7 @@ import {
   ADD_ELEMENT_TO_SYSTEM,
   UPDATE_SCHEMA_TABLE,
   UPDATE_TABLE,
-  UPDATE_FORM,
+  UPDATE_FORM
 } from "./constants";
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -15,19 +15,19 @@ export const reducer = (state = initialState, action) => {
         ...state,
         [action.payload.country]: [
           ...state[action.payload.country],
-          action.payload.newPage,
-        ],
+          action.payload.newPage
+        ]
       };
 
     case ADD_NEW_TAB:
       return {
         ...state,
-        [action.payload.country]: action.payload.pages,
+        [action.payload.country]: action.payload.pages
       };
     case ADD_ELEMENT_TO_SYSTEM:
       return {
         ...state,
-        elements: [...state.elements, action.payload],
+        elements: [...state.elements, action.payload]
       };
     case UPDATE_TABLE:
       let newElementsArray = [...state.elements];
@@ -38,9 +38,10 @@ export const reducer = (state = initialState, action) => {
 
       return {
         ...state,
-        elements: newElementsArray,
+        elements: newElementsArray
       };
     case UPDATE_SCHEMA_TABLE:
+      console.log("redux");
       let elementsArray = [...state.elements];
       let indexOfTable = elementsArray.findIndex(
         (element) => element.id === action.payload.id
@@ -48,7 +49,7 @@ export const reducer = (state = initialState, action) => {
       elementsArray[indexOfTable].schema = [...action.payload.schema];
       return {
         ...state,
-        elements: elementsArray,
+        elements: elementsArray
       };
     case UPDATE_FORM:
       let newElementsArray2 = [...state.elements];
@@ -58,7 +59,7 @@ export const reducer = (state = initialState, action) => {
       newElementsArray2[elementsIndexForm] = action.payload.form;
       return {
         ...state,
-        elements: newElementsArray2,
+        elements: newElementsArray2
       };
     default:
       return state;
