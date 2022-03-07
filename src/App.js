@@ -69,15 +69,18 @@ function App({ siteSchema, addNewElement, updateSchema }) {
                 id: element.id,
                 nameTable: element.nameTable,
                 defaultValues: [
-                  ...TablesSchemas[element.nameTable].initialData,
+                  ...TablesSchemas[element.nameTable].initialData
                 ],
                 data: [...TablesSchemas[element.nameTable].initialData],
                 schema: Object.assign(TablesSchemas[element.nameTable].schema),
                 getColumns: element.getColumns,
+                footers: TablesSchemas[element.nameTable].footers
+                  ? [...TablesSchemas[element.nameTable].footers]
+                  : []
               };
               if (TablesSchemas[element.nameTable].visibility?.length > 0) {
                 payload.visibility = [
-                  ...TablesSchemas[element.nameTable]?.visibility,
+                  ...TablesSchemas[element.nameTable]?.visibility
                 ];
               }
               addNewElement(payload);
@@ -97,7 +100,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
                 uiSchema: Object.assign(
                   InputsSchemas[element.nameInput].uiSchema
                 ),
-                schema: Object.assign(InputsSchemas[element.nameInput].schema),
+                schema: Object.assign(InputsSchemas[element.nameInput].schema)
               };
 
               addNewElement(payload);
@@ -158,8 +161,8 @@ function App({ siteSchema, addNewElement, updateSchema }) {
       const values = [
         ...getValuesOfAColumn({
           id: idOfImportTable,
-          dataIndex: dataIndexOfImportTable,
-        }),
+          dataIndex: dataIndexOfImportTable
+        })
       ];
       const newSchemaObject = [...TablesSchemas[table.nameTable].schema];
       values.forEach((value) => {
@@ -172,7 +175,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
           newSchemaObject.push({
             title: stringifyValue,
             editable: true,
-            dataIndex: stringifyValue,
+            dataIndex: stringifyValue
           });
         }
       });
@@ -238,7 +241,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state,
+    siteSchema: state
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -246,7 +249,7 @@ function mapDispatchToProps(dispatch) {
     addNewElement: (payload) =>
       dispatch({ type: ADD_ELEMENT_TO_SYSTEM, payload: payload }),
     updateSchema: (payload) =>
-      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload }),
+      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload })
   };
 }
 

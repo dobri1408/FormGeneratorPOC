@@ -4,8 +4,32 @@ import { Table, Input, Button, Popconfirm, Form } from "antd";
 import { INSERT_ROW, UPDATE_TABLE } from "../../../redux/constants";
 import "./TableRender.css";
 import * as Validations from "../../../CellValidationsFunction/index";
-import { CiOutlined } from "@ant-design/icons";
+import * as Popovers from "../../../utils/popovers";
+import * as Footers from "../../../utils/footers";
+import { Popover } from "antd";
+const renderPopover = (
+  value,
+  row,
+  column,
+  tableData,
+  popoverFunction,
+  children
+) => {
+  console.log(tableData, value, row, column, popoverFunction, children);
+  if (!value || !row || !column || !tableData) return;
+  let props = {
+    value: value,
+    row: row,
+    column: column,
+    tableData: Object.assign(tableData)
+  };
+
+  let result = Popovers[popoverFunction](props);
+  if (result) return <Popover content={result}>{children}</Popover>;
+  return <>{children}</>;
+};
 const EditableContext = React.createContext(null);
+
 const EditableRow = ({ index, ...props }) => {
   const [form] = Form.useForm();
   return (
@@ -27,11 +51,13 @@ const EditableCell = ({
   tableData,
   validator,
   defaultValuesRow,
+  popoversFunctions,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
   const inputRef = useRef(null);
   const form = useContext(EditableContext);
+
   useEffect(() => {
     if (editing) {
       inputRef.current.focus();
@@ -41,7 +67,7 @@ const EditableCell = ({
   const toggleEdit = () => {
     setEditing(!editing);
     form.setFieldsValue({
-      [dataIndex]: record[dataIndex],
+      [dataIndex]: record[dataIndex]
     });
   };
 
@@ -60,17 +86,17 @@ const EditableCell = ({
     childNode = editing ? (
       <Form.Item
         style={{
-          margin: 0,
+          margin: 0
         }}
         name={dataIndex}
         rules={[
           {
             required: true,
-            message: `${title} is required.`,
+            message: `${title} is required.`
           },
           {
-            validator: validator,
-          },
+            validator: validator
+          }
         ]}
       >
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
@@ -84,11 +110,22 @@ const EditableCell = ({
             defaultValuesRow !== undefined &&
             children[1] != defaultValuesRow[dataIndex]
               ? "gold"
-              : "white",
+              : "white"
         }}
         onClick={toggleEdit}
       >
-        {children}
+        {popoversFunctions.length > 0
+          ? popoversFunctions?.map((functionName) =>
+              renderPopover(
+                children,
+                record.key,
+                dataIndex,
+                tableData,
+                functionName,
+                children
+              )
+            )
+          : children}
       </div>
     );
   }
@@ -96,14 +133,15 @@ const EditableCell = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-function TableRender({ id }) {
+function TableRender({ id, name }) {
   const tableData = useSelector((state) =>
     state.elements.find((element) => element.id === id)
   );
 
   const [numRows, setNumRows] = useState(tableData.data.length);
   const [validationsOfTable, setValidationsOfTable] = useState({});
-
+  const [popoversObject, setPopoversObject] = useState({});
+  const [footers, setFooters] = useState([]);
   const dispatch = useDispatch();
   const handleAdd = () => {
     const newRow = {};
@@ -123,7 +161,7 @@ function TableRender({ id }) {
 
     dispatch({
       type: UPDATE_TABLE,
-      payload: { id: id, tableData: newData },
+      payload: { id: id, tableData: newData }
     });
   };
   const insertRow = (row, defaultRow = null) => {
@@ -132,7 +170,7 @@ function TableRender({ id }) {
     if (defaultRow != null) newData.defaultValues.push(defaultRow);
     dispatch({
       type: UPDATE_TABLE,
-      payload: { id: id, tableData: newData },
+      payload: { id: id, tableData: newData }
     });
   };
   //CELL VALIDATION
@@ -154,11 +192,29 @@ function TableRender({ id }) {
                   validation?.indexOf("=") + 1,
                   validation?.length
                 )
-              : null,
+              : null
         });
       });
     });
     setValidationsOfTable(newObjectValidations);
+  }, [tableData]);
+  //USE EFFFECT GET POPOVERS_OBJECT
+  useEffect(() => {
+    const newObjectPopovers = {};
+    tableData.schema?.forEach((column) => {
+      newObjectPopovers[column?.dataIndex] = [];
+      column?.popovers?.forEach((popoverFunction) => {
+        newObjectPopovers[column?.dataIndex].push(popoverFunction);
+      });
+    });
+    setPopoversObject(newObjectPopovers);
+    const footersArray = [];
+    if (tableData.footers.length) {
+      tableData.footers.forEach((footer) => {
+        footersArray.push(Footers[footer](tableData));
+      });
+    }
+    setFooters(footersArray);
   }, [tableData]);
   //SAVE MODIFICATIONS ON CELL
   const handleSave = (row) => {
@@ -168,8 +224,8 @@ function TableRender({ id }) {
   const components = {
     body: {
       row: EditableRow,
-      cell: EditableCell,
-    },
+      cell: EditableCell
+    }
   };
   const columns = tableData?.schema.map((col) => {
     if (!col.editable) {
@@ -183,11 +239,16 @@ function TableRender({ id }) {
         dataIndex: col.dataIndex,
         title: col.title,
         handleSave: handleSave,
+        tableData: Object.assign(tableData) || {},
         validator: validator,
         defaultValuesRow: tableData.defaultValues.find(
           (row) => row.key === record.key
         ),
-      }),
+        popoversFunctions:
+          popoversObject[col.dataIndex]?.length > 0
+            ? popoversObject[col.dataIndex]
+            : []
+      })
     };
   });
   const validator = (rule, value, callback) => {
@@ -213,12 +274,14 @@ function TableRender({ id }) {
   return (
     <>
       <div className="table-header">
-        idk
+        <p>
+          T{id} - {name}
+        </p>
         <Button
           onClick={handleAdd}
           type="primary"
           style={{
-            marginBottom: 16,
+            marginBottom: 16
           }}
         >
           Add a row
@@ -230,7 +293,14 @@ function TableRender({ id }) {
         bordered
         dataSource={[...tableData.data]}
         columns={columns}
+        pagination={false}
       />
+      {footers.map((footer) => (
+        <div className="footer">
+          <span className="left">{footer.name}</span>
+          <span className="right">{footer.value}</span>
+        </div>
+      ))}
     </>
   );
 }

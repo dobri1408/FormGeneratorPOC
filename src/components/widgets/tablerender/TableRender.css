@@ -21,4 +21,17 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+  gap: 20%;
+}
+p {
+  font-weight: bold;
+}
+.footer {
+  width: 100%;
+  background-color: gold;
+  padding-left: 0;
+  border: 1px solid;
+}
+.left {
+  margin-right: 60%;
 }

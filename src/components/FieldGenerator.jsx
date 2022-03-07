@@ -38,7 +38,8 @@ function FieldGenerator({
           pageName: pageName,
           tabName: tabName,
           setConfigurationQuill: setConfigurationQuill,
-          id: block.id
+          id: block.id,
+          name: block?.name
         };
         return show && Widgets[block.type](props);
       })}

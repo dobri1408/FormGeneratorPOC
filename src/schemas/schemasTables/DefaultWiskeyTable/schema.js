@@ -3,18 +3,18 @@ const columns = [
     title: "Name of Wiksey",
     dataIndex: "name",
 
-    editable: true,
+    editable: true
   },
   {
     title: "Premium",
     dataIndex: "premium",
-    editable: true,
+    editable: true
   },
   {
     title: "Vechi",
     dataIndex: "Vechi",
-    editable: true,
-  },
+    editable: true
+  }
 ];
 
 const dataSource = [
@@ -22,18 +22,17 @@ const dataSource = [
     key: "1",
     name: "Brandy",
     premium: "da",
-    vechi: "nu",
+    vechi: "nu"
   },
   {
     key: "2",
     name: "Ceva rusesc",
     premium: "nu",
-    vechi: "da",
-  },
+    vechi: "da"
+  }
 ];
 
 export const defualtWiskeyTable = {
   schema: columns,
-  name: "Default Wiksey Table",
-  initialData: dataSource,
+  initialData: dataSource
 };

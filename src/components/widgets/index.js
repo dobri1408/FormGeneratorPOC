@@ -31,10 +31,10 @@ export const Widgets = {
   table: (props) => {
     return (
       <>
-        <TableRender id={props.id} />
+        <TableRender id={props.id} name={props.name} />
         <br />
         <br />
       </>
     );
-  },
+  }
 };
