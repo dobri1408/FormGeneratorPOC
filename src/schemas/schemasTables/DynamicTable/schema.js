@@ -31,6 +31,7 @@ export const dynamicTable = {
   schema: columns,
   initialData: dataSource,
   dynamic: true,
+  name: "Dynamic Table",
   visibility: [
     {
       id: 8,

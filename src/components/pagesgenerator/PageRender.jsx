@@ -13,7 +13,7 @@ import { countries } from "../../data/countries";
 import { Validations } from "../Validation";
 import {
   openErrorNotification,
-  openSuccessNotification
+  openSuccessNotification,
 } from "../notification/SaveNotification";
 
 const { Header, Content } = Layout;
@@ -23,7 +23,7 @@ function PageRender({
   setSelectedCountry,
   setCountryCode,
   siteSchema,
-  addNewElement
+  addNewElement,
 }) {
   let { country, pageName } = useParams();
   const countrySchema = siteSchema[country];
@@ -33,9 +33,9 @@ function PageRender({
   const [pageSchema, setPageSchema] = useState([]);
   const [configurationQuill, setConfigurationQuill] = useState({
     modules: {
-      toolbar: false // Snow includes toolbar by default
+      toolbar: false, // Snow includes toolbar by default
     },
-    readOnly: true
+    readOnly: true,
   });
   const [modalFormGenerator, setModalFormGenerator] = useState(false);
 
@@ -89,61 +89,21 @@ function PageRender({
           title={pageName}
           extra={[
             <Button
-              key="1"
-              type="primary"
-              onClick={() => {
-                let foundIndex = countrySchema.findIndex(
-                  (x) => x.pageName === pageName
-                );
-
-                let tabIndex = countrySchema[foundIndex].tabs.findIndex(
-                  (x) => x.tabName === tabName
-                );
-                !("elements" in countrySchema[foundIndex].tabs[tabIndex]) &&
-                  (countrySchema[foundIndex].tabs[tabIndex].elements = []);
-                countrySchema[foundIndex].tabs[tabIndex]?.elements?.push({
-                  type: "quill",
-                  id: uuidv4(),
-                  content: {}
-                });
-              }}
-            >
-              Add new Text Editor
-            </Button>,
-            <Button
-              key="2"
-              type="primary"
-              onClick={() => {
-                setModalFormGenerator(true);
-              }}
-            >
-              Add new Form
-            </Button>,
-            <Button
-              key="3"
-              type="primary"
-              onClick={() => {
-                setModalTableGenerator(true);
-              }}
-            >
-              Add new Table
-            </Button>,
-            <Button
               key="4"
               type="primary"
               onClick={() => {
                 setConfigurationQuill({
                   modules: {
-                    toolbar: false // Snow includes toolbar by default
+                    toolbar: false, // Snow includes toolbar by default
                   },
-                  readOnly: true
+                  readOnly: true,
                 });
 
                 if (checkErrors() === false) openSuccessNotification();
               }}
             >
               Save
-            </Button>
+            </Button>,
           ]}
         />
       </Header>
@@ -180,7 +140,7 @@ function PageRender({
             style={{
               display: "inline-block",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             <FieldGenerator
@@ -198,7 +158,7 @@ function PageRender({
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state
+    siteSchema: state,
   };
 }
 

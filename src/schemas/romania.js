@@ -9,21 +9,20 @@ export const schemaRomania = [
           {
             type: "input",
             nameInput: "RadioInput",
-            id: 8
+            id: 8,
           },
           {
             type: "table",
-            nameTable: "wiskeyTable",
-            id: 16,
+            nameTable: "defualtWiskeyTable",
+            id: 22,
             visibility: [
               {
                 id: 8,
                 dependencies: [
-                  { key: "exampleRadioEnum", value: "Vreau Tabel" }
-                ]
-              }
+                  { key: "exampleRadioEnum", value: "Default Table" },
+                ],
+              },
             ],
-            getColumns: { id: 20, dataIndex: "property" }
           },
           {
             type: "table",
@@ -33,14 +32,28 @@ export const schemaRomania = [
               {
                 id: 8,
                 dependencies: [
-                  { key: "exampleRadioEnum", value: "Nu vreau tabel" }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
+                  { key: "exampleRadioEnum", value: "Custom Table" },
+                ],
+              },
+            ],
+          },
+          {
+            type: "table",
+            nameTable: "wiskeyTable",
+            id: 16,
+            visibility: [
+              {
+                id: 8,
+                dependencies: [
+                  { key: "exampleRadioEnum", value: "Custom Table" },
+                ],
+              },
+            ],
+            getColumns: { id: 20, dataIndex: "property" },
+          },
+        ],
+      },
+    ],
   },
   {
     pageName: "Padure Conifere",
@@ -54,54 +67,54 @@ export const schemaRomania = [
             content: {
               ops: [
                 {
-                  insert: "Contest here..\nContest..."
+                  insert: "Contest here..\nContest...",
                 },
                 {
                   attributes: {
-                    header: 1
+                    header: 1,
                   },
-                  insert: "\n"
+                  insert: "\n",
                 },
                 {
-                  insert: "idk"
+                  insert: "idk",
                 },
                 {
                   attributes: {
-                    list: "ordered"
+                    list: "ordered",
                   },
-                  insert: "\n"
+                  insert: "\n",
                 },
                 {
-                  insert: "cool"
-                },
-                {
-                  attributes: {
-                    list: "ordered"
-                  },
-                  insert: "\n"
+                  insert: "cool",
                 },
                 {
                   attributes: {
-                    bold: true
+                    list: "ordered",
                   },
-                  insert: "bold"
+                  insert: "\n",
                 },
                 {
                   attributes: {
-                    list: "ordered"
+                    bold: true,
                   },
-                  insert: "\n"
-                }
-              ]
-            }
+                  insert: "bold",
+                },
+                {
+                  attributes: {
+                    list: "ordered",
+                  },
+                  insert: "\n",
+                },
+              ],
+            },
           },
-          { type: "table", nameTable: "tableSurfaceCountries", id: 1 }
-        ]
+          { type: "table", nameTable: "tableSurfaceCountries", id: 1 },
+        ],
       },
       {
         tabName: "Brasov",
-        elements: [{ type: "table", nameTable: "tableSurfaceCounties", id: 2 }]
-      }
-    ]
-  }
+        elements: [{ type: "table", nameTable: "tableSurfaceCounties", id: 2 }],
+      },
+    ],
+  },
 ];

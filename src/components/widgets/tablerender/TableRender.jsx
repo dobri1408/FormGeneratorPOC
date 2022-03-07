@@ -41,7 +41,7 @@ const EditableCell = ({
   const toggleEdit = () => {
     setEditing(!editing);
     form.setFieldsValue({
-      [dataIndex]: record[dataIndex]
+      [dataIndex]: record[dataIndex],
     });
   };
 
@@ -60,17 +60,17 @@ const EditableCell = ({
     childNode = editing ? (
       <Form.Item
         style={{
-          margin: 0
+          margin: 0,
         }}
         name={dataIndex}
         rules={[
           {
             required: true,
-            message: `${title} is required.`
+            message: `${title} is required.`,
           },
           {
-            validator: validator
-          }
+            validator: validator,
+          },
         ]}
       >
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
@@ -84,7 +84,7 @@ const EditableCell = ({
             defaultValuesRow !== undefined &&
             children[1] != defaultValuesRow[dataIndex]
               ? "gold"
-              : "white"
+              : "white",
         }}
         onClick={toggleEdit}
       >
@@ -123,7 +123,7 @@ function TableRender({ id }) {
 
     dispatch({
       type: UPDATE_TABLE,
-      payload: { id: id, tableData: newData }
+      payload: { id: id, tableData: newData },
     });
   };
   const insertRow = (row, defaultRow = null) => {
@@ -132,7 +132,7 @@ function TableRender({ id }) {
     if (defaultRow != null) newData.defaultValues.push(defaultRow);
     dispatch({
       type: UPDATE_TABLE,
-      payload: { id: id, tableData: newData }
+      payload: { id: id, tableData: newData },
     });
   };
   //CELL VALIDATION
@@ -154,7 +154,7 @@ function TableRender({ id }) {
                   validation?.indexOf("=") + 1,
                   validation?.length
                 )
-              : null
+              : null,
         });
       });
     });
@@ -168,8 +168,8 @@ function TableRender({ id }) {
   const components = {
     body: {
       row: EditableRow,
-      cell: EditableCell
-    }
+      cell: EditableCell,
+    },
   };
   const columns = tableData?.schema.map((col) => {
     if (!col.editable) {
@@ -186,8 +186,8 @@ function TableRender({ id }) {
         validator: validator,
         defaultValuesRow: tableData.defaultValues.find(
           (row) => row.key === record.key
-        )
-      })
+        ),
+      }),
     };
   });
   const validator = (rule, value, callback) => {
@@ -212,15 +212,18 @@ function TableRender({ id }) {
 
   return (
     <>
-      <Button
-        onClick={handleAdd}
-        type="primary"
-        style={{
-          marginBottom: 16
-        }}
-      >
-        Add a row
-      </Button>
+      <div className="table-header">
+        idk
+        <Button
+          onClick={handleAdd}
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+        >
+          Add a row
+        </Button>
+      </div>
       <Table
         components={components}
         rowClassName={() => "editable-row"}

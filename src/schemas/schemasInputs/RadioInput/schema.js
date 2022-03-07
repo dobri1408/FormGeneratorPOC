@@ -3,7 +3,7 @@ const schema = {
   properties: {
     exampleRadioEnum: {
       type: "string",
-      enum: ["Nu vreau tabel", "Vreau Tabel"],
+      enum: ["Default Table", "Custom Table"],
     },
   },
 };
@@ -17,7 +17,7 @@ const uiSchema = {
 };
 
 export const data = {
-  exampleRadioEnum: "Vreau Tabel",
+  exampleRadioEnum: "Default Table",
 };
 
 export const RadioInput = {

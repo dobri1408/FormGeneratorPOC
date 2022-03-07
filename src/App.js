@@ -69,15 +69,15 @@ function App({ siteSchema, addNewElement, updateSchema }) {
                 id: element.id,
                 nameTable: element.nameTable,
                 defaultValues: [
-                  ...TablesSchemas[element.nameTable].initialData
+                  ...TablesSchemas[element.nameTable].initialData,
                 ],
                 data: [...TablesSchemas[element.nameTable].initialData],
                 schema: Object.assign(TablesSchemas[element.nameTable].schema),
-                getColumns: element.getColumns
+                getColumns: element.getColumns,
               };
               if (TablesSchemas[element.nameTable].visibility?.length > 0) {
                 payload.visibility = [
-                  ...TablesSchemas[element.nameTable]?.visibility
+                  ...TablesSchemas[element.nameTable]?.visibility,
                 ];
               }
               addNewElement(payload);
@@ -97,7 +97,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
                 uiSchema: Object.assign(
                   InputsSchemas[element.nameInput].uiSchema
                 ),
-                schema: Object.assign(InputsSchemas[element.nameInput].schema)
+                schema: Object.assign(InputsSchemas[element.nameInput].schema),
               };
 
               addNewElement(payload);
@@ -142,7 +142,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
     });
 
     //TO DO action to update schemas of tables
-  }, [siteSchema.elements]);
+  }, [getValueOfSpecifedTable, siteSchema.elements, updateSchema]);
   useEffect(() => {
     const tables = siteSchema.elements.filter(
       (element) => element?.type === "table"
@@ -158,21 +158,26 @@ function App({ siteSchema, addNewElement, updateSchema }) {
       const values = [
         ...getValuesOfAColumn({
           id: idOfImportTable,
-          dataIndex: dataIndexOfImportTable
-        })
+          dataIndex: dataIndexOfImportTable,
+        }),
       ];
-      const newSchemaObject = [...table.schema];
+      const newSchemaObject = [...TablesSchemas[table.nameTable].schema];
       values.forEach((value) => {
-        newSchemaObject.push({
-          title: JSON.stringify(value),
-          editable: true,
-          dataIndex: JSON.stringify(value)
-        });
+        let stringifyValue = JSON.stringify(value).slice(1);
+        stringifyValue = stringifyValue.slice(0, -1);
+        if (
+          stringifyValue.length > 0 &&
+          !newSchemaObject.find((column) => column.title === stringifyValue)
+        ) {
+          newSchemaObject.push({
+            title: stringifyValue,
+            editable: true,
+            dataIndex: stringifyValue,
+          });
+        }
       });
-      console.log({ newSchemaObject });
       const newTable = Object.assign(table);
       newTable.schema = [...newSchemaObject];
-      console.log("aici");
 
       if (
         JSON.stringify(
@@ -185,7 +190,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
         updateSchema(payload);
       }
     });
-  }, [siteSchema.elements]);
+  }, [getValuesOfAColumn, siteSchema.elements, updateSchema]);
   ///DESPARE in DOUA USEFEECT
   return (
     <>
@@ -233,7 +238,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state
+    siteSchema: state,
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -241,7 +246,7 @@ function mapDispatchToProps(dispatch) {
     addNewElement: (payload) =>
       dispatch({ type: ADD_ELEMENT_TO_SYSTEM, payload: payload }),
     updateSchema: (payload) =>
-      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload })
+      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload }),
   };
 }
 
