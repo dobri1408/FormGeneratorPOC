@@ -3,19 +3,19 @@ const columns = [
     title: "Name of Wiksey",
     dataIndex: "name",
 
-    editable: true
-  }
+    editable: true,
+  },
 ];
 
 const dataSource = [
   {
     key: "1",
-    name: "Brandy"
+    name: "Brandy",
   },
   {
     key: "2",
-    name: "Ceva rusesc"
-  }
+    name: "Ceva rusesc",
+  },
 ];
 
 export const wiskeyTable = {
@@ -24,7 +24,8 @@ export const wiskeyTable = {
   visibility: [
     {
       id: 8,
-      dependencies: [{ key: "exempleRadioEnum", value: "Vreau Tabel" }]
-    }
-  ]
+      dependencies: [{ key: "exempleRadioEnum", value: "Vreau Tabel" }],
+    },
+  ],
+  generalValidation: ["min=50"],
 };

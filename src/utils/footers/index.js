@@ -1,6 +1,6 @@
 export const totalFooter = (tableData) => {
   let total = 0;
-  tableData.data.forEach((row) => (total += row.surface));
+  tableData.data.forEach((row) => (total += parseInt(row.surface)));
 
   return { name: "Total", value: total };
 };

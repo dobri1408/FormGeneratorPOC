@@ -1,4 +1,3 @@
-import "./App.css";
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import Toolbar from "./components/toolbar/Toolbar";
@@ -69,18 +68,20 @@ function App({ siteSchema, addNewElement, updateSchema }) {
                 id: element.id,
                 nameTable: element.nameTable,
                 defaultValues: [
-                  ...TablesSchemas[element.nameTable].initialData
+                  ...TablesSchemas[element.nameTable].initialData,
                 ],
                 data: [...TablesSchemas[element.nameTable].initialData],
                 schema: Object.assign(TablesSchemas[element.nameTable].schema),
                 getColumns: element.getColumns,
                 footers: TablesSchemas[element.nameTable].footers
                   ? [...TablesSchemas[element.nameTable].footers]
-                  : []
+                  : [],
+                generalValidation:
+                  TablesSchemas[element.nameTable].generalValidation,
               };
               if (TablesSchemas[element.nameTable].visibility?.length > 0) {
                 payload.visibility = [
-                  ...TablesSchemas[element.nameTable]?.visibility
+                  ...TablesSchemas[element.nameTable]?.visibility,
                 ];
               }
               addNewElement(payload);
@@ -100,7 +101,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
                 uiSchema: Object.assign(
                   InputsSchemas[element.nameInput].uiSchema
                 ),
-                schema: Object.assign(InputsSchemas[element.nameInput].schema)
+                schema: Object.assign(InputsSchemas[element.nameInput].schema),
               };
 
               addNewElement(payload);
@@ -121,7 +122,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
     const importValuesTables = tables.filter(
       (table) => TablesSchemas[table.nameTable]?.dynamic === true
     );
-    console.log({ importValuesTables });
+
     if (!importValuesTables) return;
     importValuesTables.forEach((table) => {
       const schemaOfTable = [...TablesSchemas[table.nameTable].schema];
@@ -129,7 +130,6 @@ function App({ siteSchema, addNewElement, updateSchema }) {
       schemaOfTable.forEach((column) => {
         if (column.importValues) {
           column.title = getValueOfSpecifedTable(column.importValues);
-          //   column.dataIndex = column.title;
         }
       });
 
@@ -139,7 +139,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
         ) !== JSON.stringify(schemaOfTable)
       ) {
         const payload = { id: idOfTable, schema: schemaOfTable };
-        console.log("ind");
+
         updateSchema(payload);
       }
     });
@@ -153,16 +153,16 @@ function App({ siteSchema, addNewElement, updateSchema }) {
     const getColumnsTables = tables.filter(
       (table) => table.getColumns !== undefined
     );
-    console.log({ getColumnsTables });
+
     getColumnsTables.forEach((table) => {
       const idOfImportTable = table?.getColumns?.id;
       const dataIndexOfImportTable = table?.getColumns?.dataIndex;
-      console.log({ idOfImportTable, dataIndexOfImportTable });
+
       const values = [
         ...getValuesOfAColumn({
           id: idOfImportTable,
-          dataIndex: dataIndexOfImportTable
-        })
+          dataIndex: dataIndexOfImportTable,
+        }),
       ];
       const newSchemaObject = [...TablesSchemas[table.nameTable].schema];
       values.forEach((value) => {
@@ -175,7 +175,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
           newSchemaObject.push({
             title: stringifyValue,
             editable: true,
-            dataIndex: stringifyValue
+            dataIndex: stringifyValue,
           });
         }
       });
@@ -187,13 +187,11 @@ function App({ siteSchema, addNewElement, updateSchema }) {
           siteSchema.elements.find((tablex) => tablex.id === table.id).schema
         ) != JSON.stringify(newTable.schema)
       ) {
-        console.log("nttrtr");
-        console.log(newTable.schema);
         const payload = { id: table.id, schema: newSchemaObject };
         updateSchema(payload);
       }
     });
-  }, [getValuesOfAColumn, siteSchema.elements, updateSchema]);
+  }, [siteSchema.elements, updateSchema]);
   ///DESPARE in DOUA USEFEECT
   return (
     <>
@@ -241,7 +239,7 @@ function App({ siteSchema, addNewElement, updateSchema }) {
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state
+    siteSchema: state,
   };
 }
 function mapDispatchToProps(dispatch) {
@@ -249,7 +247,7 @@ function mapDispatchToProps(dispatch) {
     addNewElement: (payload) =>
       dispatch({ type: ADD_ELEMENT_TO_SYSTEM, payload: payload }),
     updateSchema: (payload) =>
-      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload })
+      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload }),
   };
 }
 
