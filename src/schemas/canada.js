@@ -4,19 +4,13 @@ export const schemaCanada = [
     tabs: [
       {
         tabName: "Toronto",
-        elements: [{ type: "form", nameForm: "Form1" }],
+        elements: [{ type: "form", nameForm: "Form1" }]
       },
 
       {
         tabName: "Qubec",
-        elements: [
-          {
-            type: "quill",
-            id: 1,
-            content: {},
-          },
-        ],
-      },
-    ],
-  },
+        elements: [{}]
+      }
+    ]
+  }
 ];

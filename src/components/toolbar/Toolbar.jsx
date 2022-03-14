@@ -4,18 +4,21 @@ import { DiffOutlined } from "@ant-design/icons";
 import "./Toolbar.css";
 import { useHistory } from "react-router-dom";
 import ReactCountryFlag from "react-country-flag";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 const { Sider } = Layout;
 
-function Toolbar({ setModalPageGenerator, country, countryCode, siteSchema }) {
+function Toolbar({ country, countryCode }) {
   const history = useHistory();
   const [pages, setPages] = useState([]);
+  const siteSchema = useSelector((state) => state);
+
   useEffect(() => {
     if (country) {
       const countrySchema = siteSchema[country];
       setPages(countrySchema.map((e) => e.pageName));
     }
   }, [country, siteSchema]);
+
   return (
     <Sider
       style={{
@@ -42,15 +45,6 @@ function Toolbar({ setModalPageGenerator, country, countryCode, siteSchema }) {
       </div>
       {country && (
         <Menu theme="dark" mode="inline" defaultSelectedKeys={["4"]}>
-          <Menu.Item
-            key="2"
-            icon={<DiffOutlined />}
-            onClick={() => {
-              setModalPageGenerator(true);
-            }}
-          >
-            Add new page
-          </Menu.Item>
           {pages?.map((page) => {
             return (
               <Menu.Item
@@ -69,9 +63,5 @@ function Toolbar({ setModalPageGenerator, country, countryCode, siteSchema }) {
     </Sider>
   );
 }
-function mapStateToProps(state) {
-  return {
-    siteSchema: state
-  };
-}
-export default connect(mapStateToProps)(Toolbar);
+
+export default Toolbar;

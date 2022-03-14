@@ -13,7 +13,7 @@ import { countries } from "../../data/countries";
 import { Validations } from "../Validation";
 import {
   openErrorNotification,
-  openSuccessNotification,
+  openSuccessNotification
 } from "../notification/SaveNotification";
 
 const { Header, Content } = Layout;
@@ -23,7 +23,7 @@ function PageRender({
   setSelectedCountry,
   setCountryCode,
   siteSchema,
-  addNewElement,
+  addNewElement
 }) {
   let { country, pageName } = useParams();
   const countrySchema = siteSchema[country];
@@ -31,12 +31,7 @@ function PageRender({
   const [tabName, setTabName] = useState("");
   const [tabSchema, setTabSchema] = useState([]);
   const [pageSchema, setPageSchema] = useState([]);
-  const [configurationQuill, setConfigurationQuill] = useState({
-    modules: {
-      toolbar: false, // Snow includes toolbar by default
-    },
-    readOnly: true,
-  });
+
   const [modalFormGenerator, setModalFormGenerator] = useState(false);
 
   ///USEEFFECTS
@@ -92,18 +87,11 @@ function PageRender({
               key="4"
               type="primary"
               onClick={() => {
-                setConfigurationQuill({
-                  modules: {
-                    toolbar: false, // Snow includes toolbar by default
-                  },
-                  readOnly: true,
-                });
-
                 if (checkErrors() === false) openSuccessNotification();
               }}
             >
               Save
-            </Button>,
+            </Button>
           ]}
         />
       </Header>
@@ -140,14 +128,12 @@ function PageRender({
             style={{
               display: "inline-block",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "center"
             }}
           >
             <FieldGenerator
               tabSchema={tabSchema}
               pageName={pageName}
-              configurationQuill={configurationQuill}
-              setConfigurationQuill={setConfigurationQuill}
               tabName={tabName}
             />
           </div>
@@ -158,7 +144,7 @@ function PageRender({
 }
 function mapStateToProps(state) {
   return {
-    siteSchema: state,
+    siteSchema: state
   };
 }
 

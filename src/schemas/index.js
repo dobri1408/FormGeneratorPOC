@@ -6,5 +6,5 @@ export const siteSchema = {
   romania: schemaRomania,
   canada: schemaCanada,
   denmark: schemaDenmark,
-  elements: [],
+  elements: []
 };

@@ -9,12 +9,12 @@ export const schemaRomania = [
             type: "table",
             nameTable: "tableSurfaceCounties",
             id: 4,
-            name: "Counties",
+            name: "Counties"
           },
           {
             type: "input",
             nameInput: "RadioInput",
-            id: 8,
+            id: 8
           },
           {
             type: "table",
@@ -25,10 +25,10 @@ export const schemaRomania = [
               {
                 id: 8,
                 dependencies: [
-                  { key: "exampleRadioEnum", value: "Default Table" },
-                ],
-              },
-            ],
+                  { key: "exampleRadioEnum", value: "Default Table" }
+                ]
+              }
+            ]
           },
           {
             type: "table",
@@ -39,10 +39,10 @@ export const schemaRomania = [
               {
                 id: 8,
                 dependencies: [
-                  { key: "exampleRadioEnum", value: "Custom Table" },
-                ],
-              },
-            ],
+                  { key: "exampleRadioEnum", value: "Custom Table" }
+                ]
+              }
+            ]
           },
           {
             type: "table",
@@ -53,76 +53,27 @@ export const schemaRomania = [
               {
                 id: 8,
                 dependencies: [
-                  { key: "exampleRadioEnum", value: "Custom Table" },
-                ],
-              },
+                  { key: "exampleRadioEnum", value: "Custom Table" }
+                ]
+              }
             ],
-            getColumns: { id: 20, dataIndex: "property" },
-          },
-        ],
-      },
-    ],
+            getColumns: { id: 20, dataIndex: "property" }
+          }
+        ]
+      }
+    ]
   },
   {
     pageName: "Forests",
     tabs: [
       {
         tabName: "Rodna",
-        elements: [
-          {
-            type: "quill",
-            id: 3,
-            content: {
-              ops: [
-                {
-                  insert: "Contest here..\nContest...",
-                },
-                {
-                  attributes: {
-                    header: 1,
-                  },
-                  insert: "\n",
-                },
-                {
-                  insert: "idk",
-                },
-                {
-                  attributes: {
-                    list: "ordered",
-                  },
-                  insert: "\n",
-                },
-                {
-                  insert: "cool",
-                },
-                {
-                  attributes: {
-                    list: "ordered",
-                  },
-                  insert: "\n",
-                },
-                {
-                  attributes: {
-                    bold: true,
-                  },
-                  insert: "bold",
-                },
-                {
-                  attributes: {
-                    list: "ordered",
-                  },
-                  insert: "\n",
-                },
-              ],
-            },
-          },
-          { type: "table", nameTable: "tableSurfaceCountries", id: 1 },
-        ],
+        elements: [{ type: "table", nameTable: "tableSurfaceCountries", id: 1 }]
       },
       {
         tabName: "Brasov",
-        elements: [{ type: "table", nameTable: "tableSurfaceCounties", id: 2 }],
-      },
-    ],
-  },
+        elements: [{ type: "table", nameTable: "tableSurfaceCounties", id: 2 }]
+      }
+    ]
+  }
 ];

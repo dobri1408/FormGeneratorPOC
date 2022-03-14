@@ -2,109 +2,60 @@ import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import Toolbar from "./components/toolbar/Toolbar";
 import { Layout } from "antd";
-import { UPDATE_SCHEMA_TABLE } from "./redux/constants";
+import { UPDATE_SCHEMA_TABLE, ADD_ELEMENT_TO_SYSTEM } from "./redux/constants";
+import { useSelector, useDispatch } from "react-redux";
 import PageGeneratorModal from "./components/pagesgenerator/PageGeneratorModal";
-
 import PageRender from "./components/pagesgenerator/PageRender";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import PageStart from "./components/pagesgenerator/PageStart";
 import * as TablesSchemas from "./schemas/schemasTables";
 import * as InputsSchemas from "./schemas/schemasInputs";
-import { connect } from "react-redux";
-import { ADD_ELEMENT_TO_SYSTEM } from "./redux/constants";
+import {
+  getValueOfSpecifedTable,
+  insertTableIntoRedux,
+  insertInputIntoRedux,
+  updateDyanmicTables,
+  getColumnsFromAnotherTable
+} from "./utils/tables";
+
 const { Footer } = Layout;
 
-function App({ siteSchema, addNewElement, updateSchema }) {
+function App() {
   const [modalTableGenerator, setModalTableGenerator] = useState(false);
   const [modalPageGenerator, setModalPageGenerator] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [countryCode, setCountryCode] = useState("");
+  const siteSchema = useSelector((state) => state);
+  const dispatch = useDispatch();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const getValueOfSpecifedTable = (specifedTable) => {
-    const specifedTableIndex = siteSchema?.elements?.findIndex(
-      (block) => block?.type === "table" && block?.id === specifedTable?.id
-    );
-
-    const rowIndexOfSpecifedTable = siteSchema?.elements[
-      specifedTableIndex
-    ]?.data.findIndex(
-      (row) => parseInt(row?.key) === parseInt(specifedTable?.key)
-    );
-
-    return siteSchema?.elements[specifedTableIndex]?.data[
-      rowIndexOfSpecifedTable
-    ][specifedTable.dataIndex];
+  //ACTIONS
+  const addNewElement = (payload) => {
+    dispatch({ type: ADD_ELEMENT_TO_SYSTEM, payload: payload });
   };
-  const getValuesOfAColumn = (details) => {
-    const id = details?.id;
-    const dataIndex = details?.dataIndex;
-    const specifedTable = Object.assign(
-      siteSchema?.elements?.find(
-        (block) => block?.type === "table" && block?.id === id
-      )
-    );
-    const values = new Array();
-    specifedTable.data.forEach((row) => {
-      values.push(Object.assign(row[dataIndex]));
-    });
-    return values;
+  const updateSchema = (payload) => {
+    dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload });
   };
+
   useEffect(() => {
-    //insert each element of country in redux sistem
     if (selectedCountry.length === 0) return;
     const countrySchema = siteSchema[selectedCountry];
     countrySchema.forEach((page) => {
       page?.tabs?.forEach((tab) => {
         tab?.elements?.forEach((element) => {
           if (element.type === "table") {
-            if (
-              siteSchema?.elements?.findIndex(
-                (block) => block?.type === "table" && block?.id === element.id
-              ) === -1
-            ) {
-              const payload = {
-                type: "table",
-                id: element.id,
-                nameTable: element.nameTable,
-                defaultValues: [
-                  ...TablesSchemas[element.nameTable].initialData,
-                ],
-                data: [...TablesSchemas[element.nameTable].initialData],
-                schema: Object.assign(TablesSchemas[element.nameTable].schema),
-                getColumns: element.getColumns,
-                footers: TablesSchemas[element.nameTable].footers
-                  ? [...TablesSchemas[element.nameTable].footers]
-                  : [],
-                generalValidation:
-                  TablesSchemas[element.nameTable].generalValidation,
-              };
-              if (TablesSchemas[element.nameTable].visibility?.length > 0) {
-                payload.visibility = [
-                  ...TablesSchemas[element.nameTable]?.visibility,
-                ];
-              }
-              addNewElement(payload);
-            }
+            insertTableIntoRedux(
+              siteSchema,
+              TablesSchemas,
+              addNewElement,
+              element
+            );
           } else if (element.type === "input") {
             if (
               siteSchema?.elements?.findIndex(
                 (block) => block?.type === "input" && block?.id === element.id
               ) === -1
             ) {
-              const payload = {
-                type: "input",
-                id: element.id,
-                nameTable: element.nameInput,
-                default: Object.assign(InputsSchemas[element.nameInput].data),
-                data: Object.assign(InputsSchemas[element.nameInput].data),
-                uiSchema: Object.assign(
-                  InputsSchemas[element.nameInput].uiSchema
-                ),
-                schema: Object.assign(InputsSchemas[element.nameInput].schema),
-              };
-
-              addNewElement(payload);
+              insertInputIntoRedux(InputsSchemas, element, addNewElement);
             }
           }
         });
@@ -113,86 +64,10 @@ function App({ siteSchema, addNewElement, updateSchema }) {
   }, [addNewElement, selectedCountry, siteSchema]);
 
   useEffect(() => {
-    // INEFICIENT
-    //UPDATE COLUMNS OF DYNAMIC TABLES
-
-    const tables = siteSchema.elements.filter(
-      (element) => element?.type === "table"
-    );
-    const importValuesTables = tables.filter(
-      (table) => TablesSchemas[table.nameTable]?.dynamic === true
-    );
-
-    if (!importValuesTables) return;
-    importValuesTables.forEach((table) => {
-      const schemaOfTable = [...TablesSchemas[table.nameTable].schema];
-      const idOfTable = table.id;
-      schemaOfTable.forEach((column) => {
-        if (column.importValues) {
-          column.title = getValueOfSpecifedTable(column.importValues);
-        }
-      });
-
-      if (
-        JSON.stringify(
-          siteSchema.elements.find((table) => table.id === idOfTable).schema
-        ) !== JSON.stringify(schemaOfTable)
-      ) {
-        const payload = { id: idOfTable, schema: schemaOfTable };
-
-        updateSchema(payload);
-      }
-    });
-
-    //TO DO action to update schemas of tables
+    updateDyanmicTables(siteSchema, TablesSchemas, updateSchema);
+    getColumnsFromAnotherTable(siteSchema, TablesSchemas, updateSchema);
   }, [getValueOfSpecifedTable, siteSchema.elements, updateSchema]);
-  useEffect(() => {
-    const tables = siteSchema.elements.filter(
-      (element) => element?.type === "table"
-    );
-    const getColumnsTables = tables.filter(
-      (table) => table.getColumns !== undefined
-    );
 
-    getColumnsTables.forEach((table) => {
-      const idOfImportTable = table?.getColumns?.id;
-      const dataIndexOfImportTable = table?.getColumns?.dataIndex;
-
-      const values = [
-        ...getValuesOfAColumn({
-          id: idOfImportTable,
-          dataIndex: dataIndexOfImportTable,
-        }),
-      ];
-      const newSchemaObject = [...TablesSchemas[table.nameTable].schema];
-      values.forEach((value) => {
-        let stringifyValue = JSON.stringify(value).slice(1);
-        stringifyValue = stringifyValue.slice(0, -1);
-        if (
-          stringifyValue.length > 0 &&
-          !newSchemaObject.find((column) => column.title === stringifyValue)
-        ) {
-          newSchemaObject.push({
-            title: stringifyValue,
-            editable: true,
-            dataIndex: stringifyValue,
-          });
-        }
-      });
-      const newTable = Object.assign(table);
-      newTable.schema = [...newSchemaObject];
-
-      if (
-        JSON.stringify(
-          siteSchema.elements.find((tablex) => tablex.id === table.id).schema
-        ) != JSON.stringify(newTable.schema)
-      ) {
-        const payload = { id: table.id, schema: newSchemaObject };
-        updateSchema(payload);
-      }
-    });
-  }, [siteSchema.elements, updateSchema]);
-  ///DESPARE in DOUA USEFEECT
   return (
     <>
       <Router>
@@ -237,18 +112,5 @@ function App({ siteSchema, addNewElement, updateSchema }) {
     </>
   );
 }
-function mapStateToProps(state) {
-  return {
-    siteSchema: state,
-  };
-}
-function mapDispatchToProps(dispatch) {
-  return {
-    addNewElement: (payload) =>
-      dispatch({ type: ADD_ELEMENT_TO_SYSTEM, payload: payload }),
-    updateSchema: (payload) =>
-      dispatch({ type: UPDATE_SCHEMA_TABLE, payload: payload }),
-  };
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

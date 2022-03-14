@@ -4,20 +4,14 @@ export const schemaDenmark = [
     tabs: [
       {
         tabName: "Toronto",
-        elements: [{ type: "form", nameForm: "Form1" }],
+        elements: [{ type: "form", nameForm: "Form1" }]
       },
 
       {
         tabName: "Qubec",
-        elements: [
-          {
-            type: "quill",
-            id: 1,
-            content: {},
-          },
-        ],
-      },
-    ],
+        elements: [{}]
+      }
+    ]
   },
   {
     pageName: "Fieroase",
@@ -26,20 +20,14 @@ export const schemaDenmark = [
         tabName: "Toronto",
         elements: [
           { type: "table", nameTable: "Table1" },
-          { type: "form", nameForm: "Form1" },
-        ],
+          { type: "form", nameForm: "Form1" }
+        ]
       },
 
       {
         tabName: "Qubec",
-        elements: [
-          {
-            type: "quill",
-            id: 2,
-            content: {},
-          },
-        ],
-      },
-    ],
-  },
+        elements: [{}]
+      }
+    ]
+  }
 ];

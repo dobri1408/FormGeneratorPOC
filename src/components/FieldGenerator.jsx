@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
 import { Widgets } from "./widgets";
 import { connect } from "react-redux";
-function FieldGenerator({
-  tabSchema,
-  pageName,
-  configurationQuill,
-  setConfigurationQuill,
-  tabName,
-  siteSchema
-}) {
+function FieldGenerator({ tabSchema, pageName, tabName, siteSchema }) {
   const checkVisibility = (visibility) => {
     let show = true;
 
@@ -32,12 +25,11 @@ function FieldGenerator({
           show = checkVisibility(block.visibility);
         }
         let props = {
-          configurationQuill: configurationQuill,
           block: block,
           index: index,
           pageName: pageName,
           tabName: tabName,
-          setConfigurationQuill: setConfigurationQuill,
+
           id: block.id,
           name: block?.name
         };
