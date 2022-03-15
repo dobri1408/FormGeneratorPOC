@@ -1,6 +1,6 @@
 import FormRender from "./formrender/FormRender";
 import TableRender from "./tablerender/TableRender";
-
+import HtmlRender from "./htmlrender/HtmlRender";
 export const Widgets = {
   input: (props) => {
     return (
@@ -20,5 +20,14 @@ export const Widgets = {
         <br />
       </>
     );
-  }
+  },
+  html: (props) => {
+    return (
+      <>
+        <HtmlRender id={props.id} />
+        <br />
+        <br />
+      </>
+    );
+  },
 };

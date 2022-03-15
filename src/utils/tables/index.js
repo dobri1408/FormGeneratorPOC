@@ -51,7 +51,7 @@ export const insertTableIntoRedux = (
       footers: TablesSchemas[element.nameTable].footers
         ? [...TablesSchemas[element.nameTable].footers]
         : [],
-      generalValidation: TablesSchemas[element.nameTable].generalValidation
+      generalValidation: TablesSchemas[element.nameTable].generalValidation,
     };
     if (TablesSchemas[element.nameTable].visibility?.length > 0) {
       payload.visibility = [...TablesSchemas[element.nameTable]?.visibility];
@@ -68,12 +68,18 @@ export const insertInputIntoRedux = (InputsSchemas, element, addNewElement) => {
     default: Object.assign(InputsSchemas[element.nameInput].data),
     data: Object.assign(InputsSchemas[element.nameInput].data),
     uiSchema: Object.assign(InputsSchemas[element.nameInput].uiSchema),
-    schema: Object.assign(InputsSchemas[element.nameInput].schema)
+    schema: Object.assign(InputsSchemas[element.nameInput].schema),
   };
 
   addNewElement(payload);
 };
 
+export const insertHtmlIntoRedux = (element, addNewElement) => {
+  const payload = {
+    ...element,
+  };
+  addNewElement(payload);
+};
 export const updateDyanmicTables = (
   siteSchema,
   TablesSchemas,
@@ -128,10 +134,10 @@ export const getColumnsFromAnotherTable = (
       ...getValuesOfAColumn(
         {
           id: idOfImportTable,
-          dataIndex: dataIndexOfImportTable
+          dataIndex: dataIndexOfImportTable,
         },
         siteSchema
-      )
+      ),
     ];
     const newSchemaObject = [...TablesSchemas[table.nameTable].schema];
     values.forEach((value) => {
@@ -144,7 +150,7 @@ export const getColumnsFromAnotherTable = (
         newSchemaObject.push({
           title: stringifyValue,
           editable: true,
-          dataIndex: stringifyValue
+          dataIndex: stringifyValue,
         });
       }
     });

@@ -15,7 +15,8 @@ import {
   insertTableIntoRedux,
   insertInputIntoRedux,
   updateDyanmicTables,
-  getColumnsFromAnotherTable
+  getColumnsFromAnotherTable,
+  insertHtmlIntoRedux,
 } from "./utils/tables";
 
 const { Footer } = Layout;
@@ -57,6 +58,14 @@ function App() {
             ) {
               insertInputIntoRedux(InputsSchemas, element, addNewElement);
             }
+          } else if (element.type === "html") {
+            if (
+              siteSchema?.elements?.findIndex(
+                (block) => block?.type === "html" && block?.id === element.id
+              ) === -1
+            ) {
+              insertHtmlIntoRedux(element, addNewElement);
+            }
           }
         });
       });
@@ -66,7 +75,7 @@ function App() {
   useEffect(() => {
     updateDyanmicTables(siteSchema, TablesSchemas, updateSchema);
     getColumnsFromAnotherTable(siteSchema, TablesSchemas, updateSchema);
-  }, [getValueOfSpecifedTable, siteSchema.elements, updateSchema]);
+  }, [siteSchema, siteSchema.elements, updateSchema]);
 
   return (
     <>
